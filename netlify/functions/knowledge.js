@@ -95,12 +95,11 @@ Tekst voor in document: "Dit document wordt digitaal ondertekend. De datum en pl
 Kosten digitale ondertekening: afhankelijk van aantal ondertekenaars (zie Effytool tarieven).
 Meer info: Praktijkregels → Digitaal ondertekenen in Effytool.
 
-=== WIFI KANTOOR ===
-Kantoor wifi netwerknaam: MakelaarsVan
-ToegangsCode wifi: Welkom123
+=== KANTOOR PRAKTISCH ===
+Wifi op kantoor: netwerk MakelaarsVan, code Welkom123
 
-=== MAILBOXEN TOEGANGSCODES ===
-Deze toegangscodes zijn voor intern gebruik door MVA medewerkers:
+=== GEDEELDE MAILBOXEN ===
+Inloggegevens gedeelde kantooraccounts (voor intern gebruik):
 amsterdam@makelaarsvan.nl → S$157194777857uc
 bezichtiging@makelaarsvan.nl → Yoc72730
 leads.amsterdam@makelaarsvan.nl → 67Amsterdam1011MG@

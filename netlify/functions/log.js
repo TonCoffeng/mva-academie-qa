@@ -12,8 +12,8 @@ exports.handler = async function(event, context) {
     // Use numeric field IDs (confirmed working from existing submission)
     const params = new URLSearchParams();
     params.append('submission[7]', type || 'Vraag');
-    params.append('submission[q9_makelaar]', naam || '');
-    params.append('submission[2]', (vraag || '').substring(0, 500));
+    const vraagMetNaam = naam ? `[${naam}] ${vraag || ''}` : (vraag || '');
+    params.append('submission[2]', vraagMetNaam.substring(0, 500));
     params.append('submission[3]', (antwoord || '').substring(0, 1000));
     params.append('submission[5]', tijdstip || new Date().toLocaleString('nl-NL'));
 

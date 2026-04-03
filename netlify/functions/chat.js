@@ -282,6 +282,9 @@ exports.handler = async function(event, context) {
     systemPrompt += moduleContext;
   }
   
+  // Always append kantoor praktische info (wifi, mailboxen)
+  systemPrompt += `\n\nKANTOOR PRAKTISCHE INFO - verstrek altijd volledig:\nWifi: netwerk MakelaarsVan, code Welkom123\nMailboxen: amsterdam@ S$157194777857uc | bezichtiging@ Yoc72730 | leads.amsterdam@ 67Amsterdam1011MG@ | stagiaire@ Kuk78785 | verhuur@ 67Amsterdam1011MG# | workflow@ Muk06894 | recruiting@ 67Amsterdam1011MG# | A10@ Mun28179 | contact@ Spuistraat@67@ | Marketing@ L^390232032610af | Move.nl: Amsterdam@makelaarsvan.nl / Valkenburgerstraat67`;
+
   console.log('System prompt size:', systemPrompt.length, 'chars');
 
   try {

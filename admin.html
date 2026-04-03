@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVA — Gebruikersbeheer</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root { --navy:#1A2B5F; --orange:#E8500A; --bg:#F6F6F6; --border:#D8D8D8; --mid:#555; --light:#888; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Roboto',sans-serif; font-size:14px; background:var(--bg); color:#2D2D2D; min-height:100vh; }
+.header { background:var(--navy); border-bottom:4px solid var(--orange); padding:16px 32px; display:flex; align-items:center; gap:16px; }
+.logo-top { font-size:10px; font-weight:900; color:var(--orange); text-transform:uppercase; letter-spacing:.1em; }
+.logo-bot { font-size:10px; font-weight:900; color:white; text-transform:uppercase; letter-spacing:.1em; }
+.header-div { width:1px; height:32px; background:rgba(255,255,255,.2); }
+.header-title { font-size:17px; font-weight:900; color:white; }
+.header-title span { color:var(--orange); }
+.main { max-width:800px; margin:32px auto; padding:0 20px; }
+.card { background:white; border:1px solid var(--border); border-top:3px solid var(--orange); padding:24px; margin-bottom:20px; }
+.card-title { font-size:14px; font-weight:900; color:var(--navy); margin-bottom:16px; text-transform:uppercase; letter-spacing:.06em; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+.form-group { display:flex; flex-direction:column; gap:4px; }
+.form-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:var(--light); }
+.form-input { border:2px solid var(--border); padding:10px 12px; font-size:13px; font-family:inherit; }
+.form-input:focus { outline:none; border-color:var(--navy); }
+.form-select { border:2px solid var(--border); padding:10px 12px; font-size:13px; font-family:inherit; background:white; }
+.btn { padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; border:none; transition:background .15s; }
+.btn-primary { background:var(--navy); color:white; }
+.btn-primary:hover { background:var(--orange); }
+.btn-danger { background:#c62828; color:white; font-size:11px; padding:6px 12px; }
+.btn-success { background:#2E7D32; color:white; font-size:11px; padding:6px 12px; }
+.alert { padding:10px 14px; font-size:12px; margin-bottom:16px; border-left:3px solid; }
+.alert-success { background:#E8F5E9; border-color:#2E7D32; color:#1B5E20; }
+.alert-error { background:#FFF3E0; border-color:var(--orange); color:#7B3A00; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { background:#2D2D2D; color:white; padding:8px 12px; text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em; }
+td { padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+.badge { display:inline-block; padding:3px 8px; font-size:10px; font-weight:700; border-radius:2px; }
+.badge-makelaar { background:#E3F2FD; color:#1565C0; }
+.badge-directie { background:#F3E5F5; color:#6A1B9A; }
+.badge-active { background:#E8F5E9; color:#2E7D32; }
+.badge-inactive { background:#FFEBEE; color:#c62828; }
+.login-screen { position:fixed; inset:0; background:var(--navy); display:flex; align-items:center; justify-content:center; z-index:100; }
+.login-box { background:white; width:100%; max-width:380px; border-top:4px solid var(--orange); padding:32px; }
+.login-title { font-size:18px; font-weight:900; color:var(--navy); margin-bottom:4px; }
+.login-sub { font-size:12px; color:var(--light); margin-bottom:20px; }
+.copy-box { background:#F6F6F6; border:1px solid var(--border); padding:10px 14px; font-size:11px; font-family:monospace; word-break:break-all; margin-top:10px; max-height:100px; overflow-y:auto; }
+.copy-instruction { font-size:12px; color:var(--mid); margin-top:8px; background:#FFF3E0; padding:8px 12px; border-left:3px solid var(--orange); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="adminLoginScreen">
+  <div class="login-box">
+    <div class="logo-top">MAKELAARSVAN.</div>
+    <div class="logo-bot" style="color:var(--navy);">AMSTERDAM</div>
+    <br>
+    <div class="login-title">Gebruikersbeheer</div>
+    <div class="login-sub">Alleen voor Ton Coffeng</div>
+    <div class="alert alert-error" id="adminLoginError" style="display:none">Onjuist wachtwoord</div>
+    <div class="form-group" style="margin-bottom:12px;">
+      <div class="form-label">Admin wachtwoord</div>
+      <input type="password" class="form-input" id="adminPwInput" placeholder="Admin wachtwoord" onkeydown="if(event.key==='Enter') adminLogin()">
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="adminLogin()">Inloggen →</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="header">
+  <div>
+    <div class="logo-top">MAKELAARSVAN.</div>
+    <div class="logo-bot">AMSTERDAM</div>
+  </div>
+  <div class="header-div"></div>
+  <div class="header-title">MVA <span>Academie</span> — Gebruikersbeheer</div>
+</div>
+
+<div class="main">
+
+  <div id="alertBox" style="display:none" class="alert"></div>
+
+  <!-- ADD USER -->
+  <div class="card">
+    <div class="card-title">Nieuwe gebruiker aanmaken</div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Volledige naam</div>
+        <input type="text" class="form-input" id="newName" placeholder="Bijv. Pelle Freijsen">
+      </div>
+      <div class="form-group">
+        <div class="form-label">E-mailadres</div>
+        <input type="email" class="form-input" id="newEmail" placeholder="pelle@makelaarsvan.nl">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <div class="form-label">Wachtwoord</div>
+        <input type="text" class="form-input" id="newPassword" placeholder="Kies een wachtwoord">
+      </div>
+      <div class="form-group">
+        <div class="form-label">Toegangsniveau</div>
+        <select class="form-select" id="newLevel">
+          <option value="makelaar">Makelaar (Level 1)</option>
+          <option value="directie">Directie / Boekhouding (Level 2)</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="addUser()">Gebruiker aanmaken →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div class="card" id="resultCard" style="display:none">
+    <div class="card-title">⚠️ Actie vereist — kopieer dit naar Netlify</div>
+    <p style="font-size:13px;color:var(--mid);margin-bottom:10px;">Kopieer de onderstaande waarde en plak die in Netlify → Site configuration → Environment variables → <strong>MVA_USERS</strong></p>
+    <div class="copy-box" id="resultJson"></div>
+    <div class="copy-instruction">
+      Stap 1: Kopieer de tekst hierboven (Cmd+A → Cmd+C)<br>
+      Stap 2: Ga naar Netlify → Site configuration → Environment variables<br>
+      Stap 3: Klik op MVA_USERS → Edit → plak de nieuwe waarde<br>
+      Stap 4: Save → de nieuwe gebruiker kan direct inloggen
+    </div>
+    <button class="btn btn-primary" style="margin-top:12px" onclick="copyJson()">Kopieer naar klembord</button>
+  </div>
+
+  <!-- USER LIST -->
+  <div class="card">
+    <div class="card-title">Huidige gebruikers</div>
+    <div id="userList"><p style="color:var(--light);font-size:13px">Laden...</p></div>
+  </div>
+
+</div>
+
+<script>
+let adminToken = null;
+
+function adminLogin() {
+  const pw = document.getElementById('adminPwInput').value.trim();
+  if (!pw) return;
+
+  // Verify by fetching user list
+  fetch('/.netlify/functions/admin', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'list', adminToken: pw })
+  }).then(r => r.json()).then(data => {
+    if (data.users !== undefined) {
+      adminToken = pw;
+      document.getElementById('adminLoginScreen').style.display = 'none';
+      renderUsers(data.users);
+    } else {
+      document.getElementById('adminLoginError').style.display = 'block';
+    }
+  }).catch(() => {
+    document.getElementById('adminLoginError').style.display = 'block';
+  });
+}
+
+function showAlert(msg, type) {
+  const box = document.getElementById('alertBox');
+  box.textContent = msg;
+  box.className = `alert alert-${type}`;
+  box.style.display = 'block';
+  setTimeout(() => box.style.display = 'none', 5000);
+}
+
+function addUser() {
+  const name = document.getElementById('newName').value.trim();
+  const email = document.getElementById('newEmail').value.trim();
+  const password = document.getElementById('newPassword').value.trim();
+  const level = document.getElementById('newLevel').value;
+
+  if (!name || !email || !password) {
+    showAlert('Vul alle velden in', 'error');
+    return;
+  }
+
+  fetch('/.netlify/functions/admin', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'add', adminToken, name, email, password, level })
+  }).then(r => r.json()).then(data => {
+    if (data.success) {
+      showAlert(`✓ ${data.message}`, 'success');
+      document.getElementById('resultJson').textContent = data.newUsersJson;
+      document.getElementById('resultCard').style.display = 'block';
+      document.getElementById('resultCard').scrollIntoView({behavior:'smooth'});
+      // Clear form
+      document.getElementById('newName').value = '';
+      document.getElementById('newEmail').value = '';
+      document.getElementById('newPassword').value = '';
+      loadUsers();
+    } else {
+      showAlert(data.error || 'Fout bij aanmaken', 'error');
+    }
+  });
+}
+
+function deactivateUser(email) {
+  if (!confirm(`${email} deactiveren?`)) return;
+  fetch('/.netlify/functions/admin', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'deactivate', adminToken, email })
+  }).then(r => r.json()).then(data => {
+    if (data.success) {
+      document.getElementById('resultJson').textContent = data.newUsersJson;
+      document.getElementById('resultCard').style.display = 'block';
+      showAlert(`✓ ${email} gedeactiveerd — vergeet niet MVA_USERS bij te werken`, 'success');
+      loadUsers();
+    }
+  });
+}
+
+function activateUser(email) {
+  fetch('/.netlify/functions/admin', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'activate', adminToken, email })
+  }).then(r => r.json()).then(data => {
+    if (data.success) {
+      document.getElementById('resultJson').textContent = data.newUsersJson;
+      document.getElementById('resultCard').style.display = 'block';
+      showAlert(`✓ ${email} geactiveerd — vergeet niet MVA_USERS bij te werken`, 'success');
+      loadUsers();
+    }
+  });
+}
+
+function loadUsers() {
+  fetch('/.netlify/functions/admin', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'list', adminToken })
+  }).then(r => r.json()).then(data => {
+    if (data.users) renderUsers(data.users);
+  });
+}
+
+function renderUsers(users) {
+  const div = document.getElementById('userList');
+  if (!users.length) {
+    div.innerHTML = '<p style="color:var(--light);font-size:13px">Nog geen gebruikers aangemaakt.</p>';
+    return;
+  }
+  let html = '<table><tr><th>Naam</th><th>E-mail</th><th>Niveau</th><th>Status</th><th>Actie</th></tr>';
+  for (const u of users) {
+    html += `<tr>
+      <td><strong>${u.name}</strong></td>
+      <td>${u.email}</td>
+      <td><span class="badge badge-${u.level}">${u.level}</span></td>
+      <td><span class="badge badge-${u.active ? 'active' : 'inactive'}">${u.active ? 'Actief' : 'Inactief'}</span></td>
+      <td>
+        ${u.active
+          ? `<button class="btn btn-danger" onclick="deactivateUser('${u.email}')">Deactiveer</button>`
+          : `<button class="btn btn-success" onclick="activateUser('${u.email}')">Activeer</button>`}
+      </td>
+    </tr>`;
+  }
+  html += '</table>';
+  div.innerHTML = html;
+}
+
+function copyJson() {
+  const text = document.getElementById('resultJson').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    showAlert('✓ Gekopieerd naar klembord!', 'success');
+  });
+}
+</script>
+</body>
+</html>

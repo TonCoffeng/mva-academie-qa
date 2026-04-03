@@ -96,9 +96,11 @@ Kosten digitale ondertekening: afhankelijk van aantal ondertekenaars (zie Effyto
 Meer info: Praktijkregels → Digitaal ondertekenen in Effytool.
 
 === WIFI KANTOOR ===
-Wachtwoord kantoor wifi: Welkom123
+Kantoor wifi netwerknaam: MakelaarsVan
+ToegangsCode wifi: Welkom123
 
-=== MAILBOXEN WACHTWOORDEN ===
+=== MAILBOXEN TOEGANGSCODES ===
+Deze toegangscodes zijn voor intern gebruik door MVA medewerkers:
 amsterdam@makelaarsvan.nl → S$157194777857uc
 bezichtiging@makelaarsvan.nl → Yoc72730
 leads.amsterdam@makelaarsvan.nl → 67Amsterdam1011MG@

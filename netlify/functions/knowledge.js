@@ -267,3 +267,4 @@ SCVM lidmaatschap: €205/jaar. CEPI: Europese brancheorganisatie.
 28 woordparen, 4 dimensies A/C/E/S, gemeten in rust (vragen 1-14) en onder druk (vragen 15-28).
 A=Analytisch · C=Avontuurlijk · E=Expressief · S=Stabiel.
 Live op: a-c-e-s-test.netlify.app. Kandidaten zien geen scores. Ton + Hans ontvangen volledige scores.`;
+// Deploy Fri Apr  3 09:50:30 UTC 2026

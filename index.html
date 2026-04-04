@@ -534,11 +534,14 @@ body {
     <input type="password" class="login-input" id="loginPassword" placeholder="Jouw wachtwoord" onkeydown="if(event.key==='Enter') doLogin()">
     <button class="login-btn" onclick="doLogin()">Inloggen →</button>
       <div style="text-align:center;margin-top:12px">
-        <a href="mailto:toncoffeng@makelaarsvan.nl?subject=Wachtwoord%20vergeten%20MVA%20Academie&body=Hallo%20Ton%2C%0A%0AIk%20ben%20mijn%20wachtwoord%20voor%20de%20MVA%20Academie%20vergeten.%0A%0AMet%20vriendelijke%20groet" 
-           style="font-size:12px;color:#888;text-decoration:none" 
-           onclick="meldWachtwoordVergeten()">
+        <a href="#" style="font-size:12px;color:#888;text-decoration:none" onclick="toonWachtwoordVergeten();return false;">
           Wachtwoord vergeten?
         </a>
+        <div id="wwVergetenForm" style="display:none;margin-top:12px;text-align:left">
+          <input class="login-input" id="wwEmail" type="email" placeholder="Jouw e-mailadres" style="margin-bottom:8px">
+          <button class="login-btn" onclick="vraagResetLink()" style="font-size:13px;padding:10px">Stuur reset link →</button>
+          <div id="wwMsg" style="font-size:12px;color:#888;margin-top:8px;text-align:center"></div>
+        </div>
       </div>
     <div style="font-size:11px;color:#bbb;text-align:center;margin-top:12px;">Geen toegang? Neem contact op met Ton Coffeng</div>
   </div>
@@ -1077,20 +1080,37 @@ function logToJotform(type, vraag, antwoord, naam) {
 }
 
 // WACHTWOORD VERGETEN
-function meldWachtwoordVergeten() {
-  const email = document.getElementById('loginEmail')?.value || '';
-  // Log naar Jotform als melding
-  fetch('/.netlify/functions/log', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({
-      type: 'Foutmelding',
-      vraag: `Wachtwoord vergeten${email ? ' voor: ' + email : ''}`,
-      antwoord: 'Gebruiker heeft op "Wachtwoord vergeten" geklikt',
-      tijdstip: new Date().toLocaleString('nl-NL'),
-      naam: email || 'onbekend'
-    })
-  }).catch(() => {});
+function toonWachtwoordVergeten() {
+  const form = document.getElementById('wwVergetenForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  const email = document.getElementById('loginEmail')?.value;
+  if (email) document.getElementById('wwEmail').value = email;
+}
+
+async function vraagResetLink() {
+  const email = document.getElementById('wwEmail').value.trim();
+  const msgEl = document.getElementById('wwMsg');
+  if (!email) { msgEl.textContent = 'Vul je e-mailadres in.'; return; }
+  
+  msgEl.textContent = 'Bezig...';
+  try {
+    const res = await fetch('/.netlify/functions/wachtwoord', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ action: 'generateLink', email })
+    });
+    const data = await res.json();
+    if (data.error) {
+      msgEl.textContent = data.error;
+    } else if (data.emailSent) {
+      msgEl.style.color = '#16a34a';
+      msgEl.textContent = 'E-mail verstuurd! Controleer je inbox.';
+    } else {
+      msgEl.textContent = 'Neem contact op met Ton Coffeng — e-mail kon niet worden verstuurd.';
+    }
+  } catch(e) {
+    msgEl.textContent = 'Er ging iets mis. Probeer opnieuw.';
+  }
 }
 
 // LOGOUT

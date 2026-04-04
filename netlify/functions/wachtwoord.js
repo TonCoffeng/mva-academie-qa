@@ -47,6 +47,45 @@ function verifyResetToken(token) {
   } catch { return null; }
 }
 
+async function sendResetEmail(email, naam, link) {
+  const RESEND_KEY = process.env.RESEND_API_KEY;
+  if (!RESEND_KEY) return false;
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${RESEND_KEY}`
+    },
+    body: JSON.stringify({
+      from: 'MVA Academie <noreply@makelaarsvan.nl>',
+      to: [email],
+      subject: 'Stel je wachtwoord in voor de MVA Academie',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto;">
+          <div style="background: #1A2B5F; padding: 24px; text-align: center;">
+            <h1 style="color: white; margin: 0; font-size: 22px;">MVA <span style="color: #E8500A;">Academie</span></h1>
+          </div>
+          <div style="padding: 32px; background: #f9f9f9;">
+            <p style="font-size: 16px;">Hallo <strong>${naam}</strong>,</p>
+            <p>Je hebt toegang gekregen tot de MVA Academie. Klik op de knop hieronder om je wachtwoord in te stellen:</p>
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="${link}" style="background: #E8500A; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
+                Wachtwoord instellen →
+              </a>
+            </div>
+            <p style="color: #888; font-size: 13px;">Deze link is 24 uur geldig. Als je geen account hebt aangevraagd, kun je deze e-mail negeren.</p>
+          </div>
+          <div style="padding: 16px; text-align: center; color: #999; font-size: 12px;">
+            Makelaars van Amsterdam · Valkenburgerstraat 67A/B · Amsterdam
+          </div>
+        </div>
+      `
+    })
+  });
+  return res.ok;
+}
+
 exports.handler = async function(event, context) {
   const body = JSON.parse(event.body || '{}');
   const { action, email, token, wachtwoord } = body;
@@ -57,7 +96,17 @@ exports.handler = async function(event, context) {
     const resetToken = generateResetToken(email.toLowerCase());
     const host = event.headers.host || 'q-and-a-mva.netlify.app';
     const link = `https://${host}/wachtwoord.html?token=${resetToken}`;
-    return { statusCode: 200, body: JSON.stringify({ link }) };
+    
+    // Try to send email (optional - link is still returned)
+    const naam = body.naam || email.split('@')[0];
+    let emailSent = false;
+    try {
+      emailSent = await sendResetEmail(email.toLowerCase(), naam, link);
+    } catch(e) {
+      console.error('Email send error:', e.message);
+    }
+    
+    return { statusCode: 200, body: JSON.stringify({ link, emailSent }) };
   }
 
   // Verifieer token (voor wachtwoord instelpagina)

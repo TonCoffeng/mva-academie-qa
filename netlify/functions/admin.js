@@ -46,14 +46,34 @@ exports.handler = async function(event, context) {
   }
 
   if (action === 'add') {
-    const { naam, email, level, wachtwoord } = gebruiker;
-    if (!naam || !email || !wachtwoord) return { statusCode: 400, body: JSON.stringify({ error: 'Naam, email en wachtwoord verplicht' }) };
-    const { salt, hash } = hashPassword(wachtwoord);
+    const { naam, email, level } = gebruiker;
+    if (!naam || !email) return { statusCode: 400, body: JSON.stringify({ error: 'Naam en email verplicht' }) };
+    // Add with empty password - user must set via link
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.randomBytes(32).toString('hex'); // random hash - can't login until set
     const data = await supabase('POST', 'gebruikers', {
       naam, email: email.toLowerCase(), level: level || 'makelaar',
-      actief: true, wachtwoord_hash: hash, salt
+      actief: false, wachtwoord_hash: hash, salt
     });
-    return { statusCode: 200, body: JSON.stringify({ success: true, gebruiker: data?.[0] }) };
+    // Generate setup link
+    const linkRes = await fetch(`https://${process.env.URL || 'q-and-a-mva.netlify.app'}/.netlify/functions/wachtwoord`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ action: 'generateLink', email: email.toLowerCase() })
+    }).catch(() => null);
+    const linkData = linkRes ? await linkRes.json() : {};
+    return { statusCode: 200, body: JSON.stringify({ success: true, gebruiker: data?.[0], link: linkData.link }) };
+  }
+
+  if (action === 'getResetLink') {
+    const { email } = body;
+    const linkRes = await fetch('https://q-and-a-mva.netlify.app/.netlify/functions/wachtwoord', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ action: 'generateLink', email: email.toLowerCase() })
+    });
+    const linkData = await linkRes.json();
+    return { statusCode: 200, body: JSON.stringify({ link: linkData.link }) };
   }
 
   if (action === 'toggle') {

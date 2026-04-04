@@ -91,10 +91,6 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Wachtwoord</label>
-            <input class="form-input" type="password" id="newPass" placeholder="Minimaal 8 tekens">
-          </div>
-          <div class="form-group">
             <label class="form-label">Niveau</label>
             <select class="form-input" id="newLevel">
               <option value="makelaar">Makelaar</option>
@@ -102,7 +98,12 @@
             </select>
           </div>
         </div>
-        <button class="btn btn-orange" onclick="addGebruiker()">Gebruiker toevoegen</button>
+        <button class="btn btn-orange" onclick="addGebruiker()">Gebruiker toevoegen →</button>
+        <div id="linkBox" style="display:none;margin-top:16px;background:#f0f4ff;border-radius:8px;padding:16px;">
+          <div style="font-size:12px;font-weight:700;color:#1A2B5F;margin-bottom:8px">📧 Stuur deze link naar de makelaar om een wachtwoord in te stellen:</div>
+          <input id="linkValue" class="form-input" readonly onclick="this.select()" style="font-size:11px;background:white">
+          <div style="font-size:11px;color:#888;margin-top:6px">De link is 24 uur geldig. Het account wordt actief zodra de makelaar een wachtwoord heeft ingesteld.</div>
+        </div>
       </div>
     </div>
 
@@ -195,6 +196,7 @@ async function loadGebruikers() {
       <td>
         <div class="actions">
           <button class="btn btn-secondary" onclick="toggleGebruiker('${g.id}', ${g.actief})">${g.actief ? 'Deactiveer' : 'Activeer'}</button>
+          <button class="btn btn-secondary" onclick="getResetLink('${g.email}', '${g.naam}')">Reset link</button>
           <button class="btn btn-danger" onclick="deleteGebruiker('${g.id}', '${g.naam}')">Verwijder</button>
         </div>
       </td>
@@ -205,25 +207,30 @@ async function loadGebruikers() {
 async function addGebruiker() {
   const naam = document.getElementById('newNaam').value.trim();
   const email = document.getElementById('newEmail').value.trim();
-  const wachtwoord = document.getElementById('newPass').value;
   const level = document.getElementById('newLevel').value;
   
-  if (!naam || !email || !wachtwoord) {
-    showMsg('Vul naam, e-mailadres en wachtwoord in.', 'error');
+  if (!naam || !email) {
+    showMsg('Vul naam en e-mailadres in.', 'error');
     return;
   }
   
-  const data = await adminCall({ action: 'add', gebruiker: { naam, email, level, wachtwoord } });
+  const data = await adminCall({ action: 'add', gebruiker: { naam, email, level } });
   
   if (data.error) {
     showMsg(data.error, 'error');
     return;
   }
   
-  showMsg(`${naam} is toegevoegd als ${level}.`, 'success');
+  showMsg(`${naam} is toegevoegd. Stuur de link hieronder op.`, 'success');
   document.getElementById('newNaam').value = '';
   document.getElementById('newEmail').value = '';
-  document.getElementById('newPass').value = '';
+  
+  // Show the setup link
+  if (data.link) {
+    document.getElementById('linkBox').style.display = 'block';
+    document.getElementById('linkValue').value = data.link;
+  }
+  
   loadGebruikers();
 }
 
@@ -237,6 +244,17 @@ async function deleteGebruiker(id, naam) {
   await adminCall({ action: 'delete', id });
   showMsg(`${naam} is verwijderd.`, 'success');
   loadGebruikers();
+}
+
+async function getResetLink(email, naam) {
+  const data = await adminCall({ action: 'getResetLink', email });
+  if (data.link) {
+    document.getElementById('linkBox').style.display = 'block';
+    document.getElementById('linkValue').value = data.link;
+    document.getElementById('linkValue').select();
+    window.scrollTo(0, 0);
+    showMsg(`Reset link gegenereerd voor ${naam}. Kopieer en stuur op.`, 'success');
+  }
 }
 
 function showMsg(tekst, type) {

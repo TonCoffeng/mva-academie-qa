@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVA Academie — Wachtwoord instellen</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #1A2B5F; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+  .card { background: white; padding: 40px; border-radius: 12px; width: 380px; }
+  .logo { text-align: center; margin-bottom: 24px; }
+  .logo h1 { font-size: 22px; color: #1A2B5F; font-weight: 900; }
+  .logo span { color: #E8500A; }
+  .welkom { background: #f0f4ff; border-radius: 8px; padding: 14px 16px; margin-bottom: 24px; font-size: 14px; color: #1A2B5F; }
+  .form-group { margin-bottom: 16px; }
+  .form-label { display: block; font-size: 12px; font-weight: 700; color: #555; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+  .form-input { width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 15px; }
+  .form-input:focus { outline: none; border-color: #1A2B5F; }
+  .btn { width: 100%; padding: 13px; background: #E8500A; color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+  .btn:hover { background: #d4470a; }
+  .msg { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
+  .msg-error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+  .msg-success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; text-align: center; }
+  .hint { font-size: 12px; color: #999; margin-top: 4px; }
+  #loading { text-align: center; color: white; font-size: 16px; }
+</style>
+</head>
+<body>
+
+<div id="loading">Laden...</div>
+
+<div class="card" id="mainCard" style="display:none">
+  <div class="logo">
+    <h1>MVA <span>Academie</span></h1>
+  </div>
+  <div class="welkom" id="welkomMsg">Welkom!</div>
+  <div id="msg"></div>
+  <div id="formDiv">
+    <div class="form-group">
+      <label class="form-label">Nieuw wachtwoord</label>
+      <input class="form-input" type="password" id="pass1" placeholder="Minimaal 8 tekens">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Wachtwoord herhalen</label>
+      <input class="form-input" type="password" id="pass2" placeholder="Zelfde wachtwoord">
+      <div class="hint">Minimaal 8 tekens</div>
+    </div>
+    <button class="btn" onclick="stelIn()">Wachtwoord instellen →</button>
+  </div>
+  <div id="successDiv" style="display:none">
+    <div class="msg msg-success">
+      <div style="font-size:32px;margin-bottom:8px">✓</div>
+      <strong>Wachtwoord ingesteld!</strong><br>
+      Je kunt nu inloggen in de MVA Academie.
+    </div>
+    <a href="/" style="display:block;text-align:center;color:#1A2B5F;font-weight:700;text-decoration:none;margin-top:16px">→ Naar de MVA Academie</a>
+  </div>
+</div>
+
+<script>
+const token = new URLSearchParams(window.location.search).get('token');
+let userEmail = '';
+
+async function init() {
+  if (!token) {
+    document.getElementById('loading').innerHTML = '<div style="background:white;padding:24px;border-radius:8px;color:#dc2626">Ongeldige link — neem contact op met Ton Coffeng.</div>';
+    return;
+  }
+
+  const res = await fetch('/.netlify/functions/wachtwoord', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'verifyToken', token })
+  });
+  const data = await res.json();
+
+  document.getElementById('loading').style.display = 'none';
+
+  if (!res.ok || data.error) {
+    document.getElementById('mainCard').style.display = 'block';
+    document.getElementById('welkomMsg').textContent = '';
+    document.getElementById('msg').innerHTML = `<div class="msg msg-error">Deze link is verlopen of ongeldig. Vraag een nieuwe link aan bij Ton Coffeng.</div>`;
+    document.getElementById('formDiv').style.display = 'none';
+    return;
+  }
+
+  userEmail = data.email;
+  document.getElementById('mainCard').style.display = 'block';
+  document.getElementById('welkomMsg').innerHTML = `Welkom <strong>${data.naam}</strong>! Stel hieronder je wachtwoord in voor de MVA Academie.`;
+}
+
+async function stelIn() {
+  const pass1 = document.getElementById('pass1').value;
+  const pass2 = document.getElementById('pass2').value;
+  const msgEl = document.getElementById('msg');
+
+  if (pass1.length < 8) {
+    msgEl.innerHTML = '<div class="msg msg-error">Wachtwoord moet minimaal 8 tekens zijn.</div>';
+    return;
+  }
+  if (pass1 !== pass2) {
+    msgEl.innerHTML = '<div class="msg msg-error">Wachtwoorden komen niet overeen.</div>';
+    return;
+  }
+
+  const res = await fetch('/.netlify/functions/wachtwoord', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'setWachtwoord', token, wachtwoord: pass1 })
+  });
+  const data = await res.json();
+
+  if (!res.ok || data.error) {
+    msgEl.innerHTML = `<div class="msg msg-error">${data.error}</div>`;
+    return;
+  }
+
+  document.getElementById('formDiv').style.display = 'none';
+  document.getElementById('successDiv').style.display = 'block';
+  document.getElementById('msg').innerHTML = '';
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

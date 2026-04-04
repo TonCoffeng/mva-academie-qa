@@ -533,6 +533,13 @@ body {
     <div class="login-label">Wachtwoord</div>
     <input type="password" class="login-input" id="loginPassword" placeholder="Jouw wachtwoord" onkeydown="if(event.key==='Enter') doLogin()">
     <button class="login-btn" onclick="doLogin()">Inloggen →</button>
+      <div style="text-align:center;margin-top:12px">
+        <a href="mailto:toncoffeng@makelaarsvan.nl?subject=Wachtwoord%20vergeten%20MVA%20Academie&body=Hallo%20Ton%2C%0A%0AIk%20ben%20mijn%20wachtwoord%20voor%20de%20MVA%20Academie%20vergeten.%0A%0AMet%20vriendelijke%20groet" 
+           style="font-size:12px;color:#888;text-decoration:none" 
+           onclick="meldWachtwoordVergeten()">
+          Wachtwoord vergeten?
+        </a>
+      </div>
     <div style="font-size:11px;color:#bbb;text-align:center;margin-top:12px;">Geen toegang? Neem contact op met Ton Coffeng</div>
   </div>
 </div>
@@ -1069,6 +1076,23 @@ function logToJotform(type, vraag, antwoord, naam) {
   } catch(e) {}
 }
 
+// WACHTWOORD VERGETEN
+function meldWachtwoordVergeten() {
+  const email = document.getElementById('loginEmail')?.value || '';
+  // Log naar Jotform als melding
+  fetch('/.netlify/functions/log', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      type: 'Foutmelding',
+      vraag: `Wachtwoord vergeten${email ? ' voor: ' + email : ''}`,
+      antwoord: 'Gebruiker heeft op "Wachtwoord vergeten" geklikt',
+      tijdstip: new Date().toLocaleString('nl-NL'),
+      naam: email || 'onbekend'
+    })
+  }).catch(() => {});
+}
+
 // LOGOUT
 
 function doLogout() {
@@ -1092,6 +1116,11 @@ function doLogout() {
     if (badge && window._mvaName) badge.textContent = window._mvaName;
     updateDutyWidget();
     setInterval(updateDutyWidget, 60000); // Update every minute
+    // Show admin link for directie
+    const adminLink = document.getElementById('adminLink');
+    if (adminLink && (window._mvaLevel === 'directie' || localStorage.getItem('mvaLevel') === 'directie')) {
+      adminLink.style.display = 'inline';
+    }
   }
 })();
 
@@ -1124,6 +1153,9 @@ function doLogin() {
       if (badge) badge.textContent = data.name || email;
       updateDutyWidget();
       setInterval(updateDutyWidget, 60000);
+      // Show admin link for directie
+      const adminLink = document.getElementById('adminLink');
+      if (adminLink && data.level === 'directie') adminLink.style.display = 'inline';
     } else {
       document.getElementById('loginError').textContent = data.error || 'Inloggen mislukt.';
       document.getElementById('loginError').style.display = 'block';

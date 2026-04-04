@@ -1161,7 +1161,7 @@ function doLogin() {
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify({ action: 'login', email, password: pw })
   }).then(r => r.json()).then(data => {
-    if (data.success && data.token) {
+    if (data.token) {
       window._mvaToken = data.token;
       window._mvaLevel = data.level;
       window._mvaName = data.name;

@@ -1,54 +1,67 @@
-// MVA Q&A — Authentication via MVA_USERS environment variable
 const crypto = require('crypto');
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+
+async function getGebruiker(email) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/gebruikers?email=eq.${encodeURIComponent(email)}&select=*`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    }
+  });
+  const data = await res.json();
+  return data?.[0] || null;
+}
 
 function hashPassword(password, salt) {
   return crypto.createHmac('sha256', salt).update(password).digest('hex');
 }
 
-function getUsers() {
+function generateToken(email, level) {
+  const payload = { email, level, ts: Date.now() };
+  return Buffer.from(JSON.stringify(payload)).toString('base64');
+}
+
+function verifyToken(token) {
   try {
-    return JSON.parse(process.env.MVA_USERS || '{}');
-  } catch { return {}; }
+    const payload = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    if (Date.now() - payload.ts > 8 * 60 * 60 * 1000) return null; // 8 uur
+    return payload;
+  } catch { return null; }
 }
 
 exports.handler = async function(event, context) {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
+  const body = JSON.parse(event.body || '{}');
+  const { action, email, password, token } = body;
+
+  if (action === 'verify') {
+    const payload = verifyToken(token);
+    if (!payload) return { statusCode: 401, body: JSON.stringify({ error: 'Token verlopen' }) };
+    return { statusCode: 200, body: JSON.stringify({ valid: true, email: payload.email, level: payload.level }) };
   }
 
-  let body;
-  try { body = JSON.parse(event.body); }
-  catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
-
-  const { action, email, password } = body;
-
   if (action === 'login') {
-    if (!email || !password) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'E-mail en wachtwoord verplicht' }) };
+    if (!email || !password) return { statusCode: 400, body: JSON.stringify({ error: 'Email en wachtwoord verplicht' }) };
+
+    try {
+      const gebruiker = await getGebruiker(email.toLowerCase());
+      if (!gebruiker) return { statusCode: 401, body: JSON.stringify({ error: 'Onbekend e-mailadres' }) };
+      if (!gebruiker.actief) return { statusCode: 401, body: JSON.stringify({ error: 'Account is gedeactiveerd' }) };
+
+      const hash = hashPassword(password, gebruiker.salt);
+      if (hash !== gebruiker.wachtwoord_hash) return { statusCode: 401, body: JSON.stringify({ error: 'Onjuist wachtwoord' }) };
+
+      const tokenLevel = gebruiker.level === 'directie' ? 'directie' : 'makelaar';
+      const newToken = generateToken(email.toLowerCase(), tokenLevel);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ token: newToken, level: tokenLevel, name: gebruiker.naam })
+      };
+    } catch(e) {
+      console.error('Auth error:', e.message);
+      return { statusCode: 500, body: JSON.stringify({ error: 'Inloggen mislukt' }) };
     }
-
-    const users = getUsers();
-    const user = users[email.toLowerCase().trim()];
-
-    if (!user) {
-      return { statusCode: 401, body: JSON.stringify({ error: 'Onbekend e-mailadres. Neem contact op met Ton Coffeng.' }) };
-    }
-    if (!user.active) {
-      return { statusCode: 401, body: JSON.stringify({ error: 'Account niet actief. Neem contact op met Ton Coffeng.' }) };
-    }
-
-    const hash = hashPassword(password, user.salt);
-    if (hash !== user.passwordHash) {
-      return { statusCode: 401, body: JSON.stringify({ error: 'Onjuist wachtwoord.' }) };
-    }
-
-    const sessionToken = Buffer.from(`${email.toLowerCase()}:${user.level}:${Date.now()}`).toString('base64');
-
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ success: true, token: sessionToken, level: user.level, name: user.name })
-    };
   }
 
   return { statusCode: 400, body: JSON.stringify({ error: 'Onbekende actie' }) };

@@ -1,120 +1,78 @@
-// MVA Q&A — Admin function
-// Ton can manage users via this endpoint
 const crypto = require('crypto');
 
-function hashPassword(password, salt) {
-  return crypto.createHmac('sha256', salt).update(password).digest('hex');
-}
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
-function generateSalt() {
-  return crypto.randomBytes(16).toString('hex');
-}
-
-function getUsers() {
+function verifyToken(token) {
   try {
-    const usersJson = process.env.MVA_USERS;
-    if (!usersJson) return {};
-    return JSON.parse(usersJson);
-  } catch {
-    return {};
-  }
+    const payload = JSON.parse(Buffer.from(token, 'base64').toString('utf8'));
+    if (Date.now() - payload.ts > 8 * 60 * 60 * 1000) return null;
+    if (payload.level !== 'directie') return null;
+    return payload;
+  } catch { return null; }
+}
+
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.createHmac('sha256', salt).update(password).digest('hex');
+  return { salt, hash };
+}
+
+async function supabase(method, path, body) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  return res.json();
 }
 
 exports.handler = async function(event, context) {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
-  }
+  const body = JSON.parse(event.body || '{}');
+  const { token, action, gebruiker, id } = body;
 
-  let body;
-  try {
-    body = JSON.parse(event.body);
-  } catch {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
-  }
+  // Verify directie token
+  const payload = verifyToken(token);
+  if (!payload) return { statusCode: 401, body: JSON.stringify({ error: 'Geen toegang' }) };
 
-  const { action, adminToken, email, name, password, level, active } = body;
-  const adminKey = process.env.ADMIN_TOKEN;
-
-  // Verify admin token
-  if (adminToken !== adminKey) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Geen toegang' }) };
-  }
-
-  const users = getUsers();
-
-  // === LIST USERS ===
   if (action === 'list') {
-    const safeUsers = Object.entries(users).map(([email, u]) => ({
-      email,
-      name: u.name,
-      level: u.level,
-      active: u.active,
-      created: u.created
-    }));
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ users: safeUsers })
-    };
+    const data = await supabase('GET', 'gebruikers?select=id,naam,email,level,actief,aangemaakt&order=naam.asc');
+    return { statusCode: 200, body: JSON.stringify({ gebruikers: data }) };
   }
 
-  // === ADD USER ===
   if (action === 'add') {
-    if (!email || !password || !name || !level) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'email, naam, wachtwoord en level zijn verplicht' }) };
-    }
-
-    const salt = generateSalt();
-    users[email.toLowerCase()] = {
-      name,
-      level: level || 'makelaar',
-      active: true,
-      salt,
-      passwordHash: hashPassword(password, salt),
-      created: new Date().toISOString()
-    };
-
-    // Save back to env — return new users JSON for Ton to update in Netlify
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        message: `Gebruiker ${name} aangemaakt`,
-        newUsersJson: JSON.stringify(users),
-        instruction: 'Kopieer de waarde van newUsersJson en plak die in Netlify → Environment variables → MVA_USERS'
-      })
-    };
+    const { naam, email, level, wachtwoord } = gebruiker;
+    if (!naam || !email || !wachtwoord) return { statusCode: 400, body: JSON.stringify({ error: 'Naam, email en wachtwoord verplicht' }) };
+    const { salt, hash } = hashPassword(wachtwoord);
+    const data = await supabase('POST', 'gebruikers', {
+      naam, email: email.toLowerCase(), level: level || 'makelaar',
+      actief: true, wachtwoord_hash: hash, salt
+    });
+    return { statusCode: 200, body: JSON.stringify({ success: true, gebruiker: data?.[0] }) };
   }
 
-  // === DEACTIVATE USER ===
-  if (action === 'deactivate') {
-    if (!email || !users[email.toLowerCase()]) {
-      return { statusCode: 404, body: JSON.stringify({ error: 'Gebruiker niet gevonden' }) };
-    }
-    users[email.toLowerCase()].active = false;
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        message: `${email} gedeactiveerd`,
-        newUsersJson: JSON.stringify(users)
-      })
-    };
+  if (action === 'toggle') {
+    const current = await supabase('GET', `gebruikers?id=eq.${id}&select=actief`);
+    const newActief = !current?.[0]?.actief;
+    await supabase('PATCH', `gebruikers?id=eq.${id}`, { actief: newActief });
+    return { statusCode: 200, body: JSON.stringify({ success: true, actief: newActief }) };
   }
 
-  // === ACTIVATE USER ===
-  if (action === 'activate') {
-    if (!email || !users[email.toLowerCase()]) {
-      return { statusCode: 404, body: JSON.stringify({ error: 'Gebruiker niet gevonden' }) };
-    }
-    users[email.toLowerCase()].active = true;
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        success: true,
-        message: `${email} geactiveerd`,
-        newUsersJson: JSON.stringify(users)
-      })
-    };
+  if (action === 'delete') {
+    await supabase('DELETE', `gebruikers?id=eq.${id}`);
+    return { statusCode: 200, body: JSON.stringify({ success: true }) };
+  }
+
+  if (action === 'resetPassword') {
+    const { wachtwoord } = gebruiker;
+    const { salt, hash } = hashPassword(wachtwoord);
+    await supabase('PATCH', `gebruikers?id=eq.${id}`, { wachtwoord_hash: hash, salt });
+    return { statusCode: 200, body: JSON.stringify({ success: true }) };
   }
 
   return { statusCode: 400, body: JSON.stringify({ error: 'Onbekende actie' }) };

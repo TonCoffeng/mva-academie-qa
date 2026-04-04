@@ -123,7 +123,7 @@ exports.handler = async function(event, context) {
   if (action === 'setWachtwoord') {
     const emailFromToken = verifyResetToken(token);
     if (!emailFromToken) return { statusCode: 400, body: JSON.stringify({ error: 'Link is verlopen of ongeldig' }) };
-    if (!wachtwoord || wachtwoord.length < 8) return { statusCode: 400, body: JSON.stringify({ error: 'Wachtwoord moet minimaal 8 tekens zijn' }) };
+    if (!wachtwoord || wachtwoord.length < 6) return { statusCode: 400, body: JSON.stringify({ error: 'Wachtwoord moet minimaal 6 tekens zijn' }) };
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.createHmac('sha256', salt).update(wachtwoord).digest('hex');
     await supabasePatch(`gebruikers?email=eq.${encodeURIComponent(emailFromToken)}`, {

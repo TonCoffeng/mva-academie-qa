@@ -25,7 +25,7 @@ async function supabasePatch(path, body) {
 }
 
 function generateResetToken(email) {
-  const secret = process.env.ANTHROPIC_API_KEY?.substring(0, 16) || 'mva-secret-2026';
+  const secret = 'mva-reset-2026-mva';
   const expires = Date.now() + 24 * 60 * 60 * 1000; // 24 uur
   const data = `${email}:${expires}`;
   const sig = crypto.createHmac('sha256', secret).update(data).digest('hex').substring(0, 16);
@@ -34,7 +34,7 @@ function generateResetToken(email) {
 
 function verifyResetToken(token) {
   try {
-    const secret = process.env.ANTHROPIC_API_KEY?.substring(0, 16) || 'mva-secret-2026';
+    const secret = 'mva-reset-2026-mva';
     const decoded = Buffer.from(token, 'base64url').toString('utf8');
     const parts = decoded.split(':');
     if (parts.length !== 3) return null;

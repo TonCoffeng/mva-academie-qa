@@ -665,550 +665,68 @@ body {
 </div>
 
 <script>
-// ── SSO: Automatisch inloggen via portal ──
+// ── Toegangsbeheer: alleen via portal ──
   (function() {
-    if (localStorage.getItem('mvaToken')) return;
+    var PORTAL_URL = 'https://mva-intelligence.netlify.app';
+    var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
+    var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
 
+    // Verberg loginscherm altijd direct — toegang alleen via portal
+    var ls = document.getElementById('loginScreen');
+    if (ls) ls.style.display = 'none';
+
+    // Check SSO token in URL
     var urlParams = new URLSearchParams(window.location.search);
     var ssoParam = urlParams.get('sso');
+
     if (ssoParam) {
-      // Direct loginscherm verbergen via style attribute (synchroon)
-      var __ls = document.getElementById('loginScreen');
-      if (__ls) __ls.style.cssText = 'display:none!important';
       try {
         var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
         if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {
-          var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
-          var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
           fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(ssoData.email) + '&select=naam,level,actief', {
             headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + ssoData.access_token }
           }).then(function(r) { return r.json(); }).then(function(data) {
             var g = data && data[0];
-            if (!g || !g.actief) return;
+            if (!g || !g.actief) { window.location.href = PORTAL_URL; return; }
             var level = g.level === 'directie' ? 'directie' : 'makelaar';
             var token = btoa(JSON.stringify({ email: ssoData.email.toLowerCase(), level: level, ts: Date.now() }));
             localStorage.setItem('mvaToken', token);
             localStorage.setItem('mvaLevel', level);
             localStorage.setItem('mvaName', g.naam);
-            window.history.replaceState({}, '', window.location.pathname);
             window._mvaToken = token;
             window._mvaLevel = level;
             window._mvaName = g.naam;
-            var ls = document.getElementById('loginScreen');
-            if (ls) ls.style.display = 'none';
+            window.history.replaceState({}, '', window.location.pathname);
+            // Toon de app
             var badge = document.querySelector('.header-badge');
             if (badge) badge.textContent = g.naam;
             updateDutyWidget();
             var adminLink = document.getElementById('adminLink');
             if (adminLink && level === 'directie') adminLink.style.display = 'inline';
-          }).catch(function() {});
+          }).catch(function() { window.location.href = PORTAL_URL; });
           return;
         }
       } catch(e) {}
     }
 
-    try {
-      var sessieRaw = localStorage.getItem('sb-ehqtyhoeubchcwfavdzr-auth-token');
-      if (!sessieRaw) return;
-      var sessie = JSON.parse(sessieRaw);
-      if (!sessie || !sessie.access_token || !sessie.user) return;
-      var email = sessie.user.email;
-      if (!email) return;
-      var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
-      var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
-      fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(email) + '&select=naam,level,actief', {
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + sessie.access_token }
-      }).then(function(r) { return r.json(); }).then(function(data) {
-        var g = data && data[0];
-        if (!g || !g.actief) return;
-        var level = g.level === 'directie' ? 'directie' : 'makelaar';
-        var token = btoa(JSON.stringify({ email: email.toLowerCase(), level: level, ts: Date.now() }));
-        localStorage.setItem('mvaToken', token);
-        localStorage.setItem('mvaLevel', level);
-        localStorage.setItem('mvaName', g.naam);
-        window.location.reload();
-      }).catch(function() {});
-    } catch(e) {}
-  })();let history = [];
-let loading = false;
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-}
-
-function sendChip(el) {
-  document.getElementById('userInput').value = el.textContent;
-  send();
-}
-
-function scrollBottom() {
-  const wrap = document.getElementById('chatWrap');
-  wrap.scrollTop = wrap.scrollHeight;
-}
-
-function removeWelcome() {
-  const w = document.getElementById('welcome');
-  if (w) w.remove();
-  document.getElementById('clearBtn').style.display = 'block';
-}
-
-function formatContent(text) {
-  const lines = text.split('\n');
-  let html = '';
-  for (const line of lines) {
-    if (line.startsWith('### ')) {
-      html += `<div class="msg-h3">${esc(line.slice(4))}</div>`;
-    } else if (line.startsWith('## ')) {
-      html += `<div class="msg-h2">${esc(line.slice(3))}</div>`;
-    } else if (line.startsWith('# ')) {
-      html += `<div class="msg-h1">${esc(line.slice(2))}</div>`;
-    } else if (line.startsWith('- ') || line.startsWith('â¢ ')) {
-      html += `<div class="msg-li">â¢ ${esc(line.slice(2))}</div>`;
-    } else if (/^\d+\./.test(line)) {
-      html += `<div class="msg-li">${esc(line)}</div>`;
-    } else if (line.trim() === '') {
-      html += '<div class="msg-sep"></div>';
-    } else {
-      html += `<p>${esc(line)}</p>`;
-    }
-  }
-  // Bold
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  return html;
-}
-
-function esc(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function addMsg(role, text, sources = []) {
-  removeWelcome();
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-
-  const av = document.createElement('div');
-  av.className = 'msg-avatar';
-  av.textContent = role === 'assistant' ? 'MVA' : 'JIJ';
-
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-
-  if (role === 'assistant') {
-    bubble.innerHTML = formatContent(text);
-    // Render sources if available
-    if (sources && sources.length > 0) {
-      const srcDiv = document.createElement('div');
-      srcDiv.className = 'sources';
-      const srcLabel = document.createElement('div');
-      srcLabel.className = 'source-label';
-      srcLabel.textContent = 'Bronnen';
-      srcDiv.appendChild(srcLabel);
-      sources.forEach(s => {
-        const a = document.createElement('a');
-        a.href = s.url;
-        a.target = '_blank';
-        a.className = 'source-link';
-        a.textContent = 'â ' + s.label;
-        srcDiv.appendChild(a);
-      });
-      bubble.appendChild(srcDiv);
-    }
-
-    const actions = document.createElement('div');
-    actions.className = 'msg-actions';
-
-    const btnFout = document.createElement('button');
-    btnFout.className = 'action-btn';
-    btnFout.textContent = 'â Fout melden';
-    btnFout.onclick = () => openModal('fout', text);
-
-    const btnOntbreekt = document.createElement('button');
-    btnOntbreekt.className = 'action-btn';
-    btnOntbreekt.textContent = '+ Ontbrekende info melden';
-    btnOntbreekt.onclick = () => openModal('ontbreekt', text);
-
-    actions.appendChild(btnFout);
-    actions.appendChild(btnOntbreekt);
-    bubble.appendChild(actions);
-  } else {
-    bubble.textContent = text;
-  }
-
-  div.appendChild(av);
-  div.appendChild(bubble);
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-}
-
-function showTyping() {
-  removeWelcome();
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-  const div = document.createElement('div');
-  div.className = 'msg assistant';
-  div.id = 'typing';
-
-  const av = document.createElement('div');
-  av.className = 'msg-avatar';
-  av.textContent = 'MVA';
-
-  const dots = document.createElement('div');
-  dots.className = 'typing-dots';
-  for (let i = 0; i < 3; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot';
-    dots.appendChild(d);
-  }
-
-  div.appendChild(av);
-  div.appendChild(dots);
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-}
-
-function removeTyping() {
-  const t = document.getElementById('typing');
-  if (t) t.remove();
-}
-
-function showError(msg) {
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-  const div = document.createElement('div');
-  div.className = 'error-bar';
-  div.textContent = msg;
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-  setTimeout(() => div.remove(), 6000);
-}
-
-async function send() {
-  const input = document.getElementById('userInput');
-  const text = input.value.trim();
-  if (!text || loading) return;
-
-  loading = true;
-  document.getElementById('sendBtn').disabled = true;
-  input.value = '';
-  input.style.height = 'auto';
-
-  addMsg('user', text);
-  history.push({ role: 'user', content: text });
-  showTyping();
-
-  try {
-    const res = await fetch('/.netlify/functions/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history, token: window._mvaToken || localStorage.getItem("mvaToken") })
-    });
-
-    removeTyping();
-
-    if (res.status === 401) {
-      localStorage.removeItem('mvaToken');
-      localStorage.removeItem('mvaLevel');
-      localStorage.removeItem('mvaName');
-      window._mvaToken = null;
-      removeTyping();
-      addMsg('assistant', 'Je sessie is verlopen. Log opnieuw in om verder te gaan.');
-      setTimeout(() => location.reload(), 2000);
+    // Check bestaand token in localStorage
+    var saved = localStorage.getItem('mvaToken');
+    if (saved) {
+      window._mvaToken = saved;
+      window._mvaLevel = localStorage.getItem('mvaLevel');
+      window._mvaName = localStorage.getItem('mvaName');
+      var badge = document.querySelector('.header-badge');
+      if (badge && window._mvaName) badge.textContent = window._mvaName;
+      updateDutyWidget();
+      setInterval(updateDutyWidget, 60000);
+      var adminLink = document.getElementById('adminLink');
+      if (adminLink && window._mvaLevel === 'directie') adminLink.style.display = 'inline';
       return;
     }
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Er ging iets mis. Probeer het opnieuw.`);
-    }
 
-    const data = await res.json();
-    const reply = data.reply || 'Geen antwoord ontvangen.';
-    const sources = data.sources || [];
-    addMsg('assistant', reply, sources);
-    
-    // Log to Jotform directly from browser
-    logToJotform('Vraag', text, reply, window._mvaName || '');
-    history.push({ role: 'assistant', content: reply });
-
-  } catch (err) {
-    removeTyping();
-    showError('Er ging iets mis. Probeer het opnieuw. (' + err.message + ')');
-    history.pop();
-  }
-
-  loading = false;
-  document.getElementById('sendBtn').disabled = false;
-  input.focus();
-}
-
-function clearChat() {
-  history = [];
-  const wrap = document.getElementById('chatWrap');
-  // Remove all messages except anchor
-  Array.from(wrap.children).forEach(c => {
-    if (c.id !== 'anchor') c.remove();
-  });
-  // Re-add welcome
-  const welcome = document.createElement('div');
-  welcome.className = 'welcome';
-  welcome.id = 'welcome';
-  welcome.innerHTML = `
-    <div class="welcome-title">Welkom bij de MVA <span style="color:var(--orange)">Academie</span> Assistent</div>
-    <div class="welcome-body">Stel een vraag over jouw onboarding, de werkwijze van MVA, systemen, Ninja Selling of financiÃ«le zaken.</div>
-    <div class="welcome-grid">
-      <div class="welcome-item"><div class="welcome-item-title">Fase 1 â Dag 1â30</div><div class="welcome-item-sub">Formaliteiten, systemen, eerste bezichtiging</div></div>
-      <div class="welcome-item"><div class="welcome-item-title">Ninja Selling</div><div class="welcome-item-sub">4 principes, Ninja Nine, FORD, ochtendritueel</div></div>
-      <div class="welcome-item"><div class="welcome-item-title">Workflows</div><div class="welcome-item-sub">Aankoop & verkoop stap voor stap</div></div>
-      <div class="welcome-item"><div class="welcome-item-title">Financieel</div><div class="welcome-item-sub">Snelstart, BTW, courtage, deadlines</div></div>
-    </div>`;
-  wrap.insertBefore(welcome, document.getElementById('anchor'));
-  document.getElementById('clearBtn').style.display = 'none';
-}
-
-// MODAL
-function openModal(type, context) {
-  const isFout = type === 'fout';
-  document.getElementById('modalTitle').textContent = isFout ? 'â Fout melden' : '+ Ontbrekende informatie melden';
-  document.getElementById('modalHint').textContent = isFout
-    ? 'Beschrijf wat er niet klopt. Ton ontvangt dit ter controle voordat het wordt aangepast.'
-    : 'Beschrijf welke informatie ontbreekt. Ton beslist of het wordt toegevoegd aan de kennisbasis.';
-  document.getElementById('modalLabel').textContent = isFout ? 'Wat klopt er niet?' : 'Welke informatie ontbreekt?';
-  document.getElementById('modalText').placeholder = isFout
-    ? 'Bijv: Het courtagepercentage voor Level 2 klopt niet, het moet 42% zijn...'
-    : 'Bijv: Er ontbreekt informatie over hoe je een bezwaar behandelt bij een bod...';
-  document.getElementById('modalContext').value = context.substring(0, 250) + (context.length > 250 ? '...' : '');
-  document.getElementById('modalType').value = type;
-  document.getElementById('modalText').value = '';
-  document.getElementById('modal').classList.add('open');
-  setTimeout(() => document.getElementById('modalText').focus(), 100);
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-}
-
-async function submitModal() {
-  const text = document.getElementById('modalText').value.trim();
-  if (!text) { document.getElementById('modalText').focus(); return; }
-  const type = document.getElementById('modalType').value;
-  const context = document.getElementById('modalContext').value;
-  const submitBtn = document.getElementById('modalSubmit');
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Versturen...';
-
-  const bijlageInput = document.getElementById('modalBijlage');
-  const bijlage = bijlageInput?.files?.[0];
-
-  try {
-    let res;
-    if (bijlage) {
-      const fd = new FormData();
-      fd.append('type', type);
-      fd.append('melding', text);
-      fd.append('antwoord', context.substring(0, 500));
-      fd.append('bijlage', bijlage, bijlage.name);
-      res = await fetch('/.netlify/functions/report', { method: 'POST', body: fd });
-    } else {
-      res = await fetch('/.netlify/functions/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, melding: text, antwoord: context })
-      });
-    }
-
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      // Show thank you message inside modal instead of closing
-      document.querySelector('.modal-body').innerHTML = `
-        <div style="text-align:center;padding:32px 16px;">
-          <div style="font-size:36px;margin-bottom:12px;">â</div>
-          <div style="font-size:16px;font-weight:900;color:var(--navy);margin-bottom:8px;">Bedankt voor je melding!</div>
-          <div style="font-size:13px;color:var(--light);margin-bottom:24px;">Je melding is ontvangen. Deze wordt door Claude beoordeeld en als de wijziging correct is, stelt Claude een aanpassing voor aan Ton.</div>
-          <button class="btn-cancel" onclick="closeModal()" style="background:var(--navy);color:white;border:none;padding:10px 24px;font-weight:700;cursor:pointer;">Sluiten</button>
-        </div>`;
-    } else {
-      throw new Error(data.error || 'Onbekende fout');
-    }
-  } catch(err) {
-    submitBtn.textContent = 'Versturen naar Ton â';
-    submitBtn.disabled = false;
-    showConfirm('Melding kon niet worden verzonden. Neem direct contact op met Ton.');
-  }
-}
-
-function showConfirm(msg) {
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-  const div = document.createElement('div');
-  div.style.cssText = 'background:#E8F5E9;border:1px solid #A5D6A7;border-left:3px solid #2E7D32;padding:10px 14px;font-size:12px;color:#1B5E20;';
-  div.textContent = 'â ' + msg;
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-  setTimeout(() => div.remove(), 5000);
-}
-
-// LEADDISTRIBUTIE SCHEMA
-const MAKELAARS = [
-  'Wilma Out', 'Anthonie Schilder', 'Mathias Elias', 'Maurits Rodermond',
-  'Rogier de Vries', 'Jan Jaap ten Arve', 'Maurits van Leeuwen', 'Pelle Freijsen', 'Jori Netiv'
-];
-const ANCHOR = new Date('2026-04-03T00:00:00+02:00'); // Vrijdag 3 april 2026 = dag 0
-const SLOTS = ['00:00â04:00', '04:00â08:00', '08:00â12:00', '12:00â16:00', '16:00â20:00', '20:00â00:00'];
-
-function getMakelaarForSlot(date, slotIndex) {
-  const msPerDay = 24 * 60 * 60 * 1000;
-  const daysSinceAnchor = Math.floor((date - ANCHOR) / msPerDay);
-  const totalSlot = daysSinceAnchor * 6 + slotIndex;
-  return MAKELAARS[((totalSlot % MAKELAARS.length) + MAKELAARS.length) % MAKELAARS.length];
-}
-
-function getCurrentSlotIndex(date) {
-  const hour = date.getHours();
-  return Math.floor(hour / 4);
-}
-
-function updateDutyWidget() {
-  const now = new Date();
-  const slotIndex = getCurrentSlotIndex(now);
-  const current = getMakelaarForSlot(now, slotIndex);
-  
-  // Next slot
-  const nextSlotIndex = (slotIndex + 1) % 6;
-  const nextDate = new Date(now);
-  if (nextSlotIndex === 0) nextDate.setDate(nextDate.getDate() + 1);
-  const next = getMakelaarForSlot(nextDate, nextSlotIndex);
-  
-  // Time until next slot
-  const nextHour = (slotIndex + 1) * 4;
-  const hoursLeft = nextHour <= 24 ? nextHour - now.getHours() : (24 - now.getHours());
-  const minsLeft = 60 - now.getMinutes();
-  
-  document.getElementById('dutyName').innerHTML = `Volgende lead â <span>${current}</span>`;
-  document.getElementById('dutySlot').textContent = `Tijdslot: ${SLOTS[slotIndex]}`;
-  document.getElementById('dutyNext').textContent = `Volgende: ${next} (${SLOTS[nextSlotIndex]})`;
-  document.getElementById('dutyGrid').style.display = 'grid';
-  
-  // Makelaar van Dienst (ma-vr 09:00-17:00)
-  const MAVD = {
-    1: ['Anthonie Schilder', 'Mathias Elias'],      // maandag
-    2: ['Pelle Freijsen', 'Jori Netiv'],             // dinsdag
-    3: ['Rogier de Vries', 'Koen Buser'],            // woensdag
-    4: ['Maurits van Leeuwen', 'Jan Jaap ten Arve'], // donderdag
-    5: ['Maurits Rodermond', 'Wilma Out'],            // vrijdag
-  };
-  const dayOfWeek = now.getDay(); // 0=zo, 1=ma, ..., 5=vr, 6=za
-  const hour = now.getHours();
-  
-  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-    const pair = MAVD[dayOfWeek];
-    const isOchtend = hour < 13;
-    const mavdCurrent = isOchtend ? pair[0] : pair[1];
-    const mavdNext = isOchtend ? pair[1] : (MAVD[dayOfWeek < 5 ? dayOfWeek + 1 : 1]?.[0] || 'â');
-    const mavdSlotLabel = isOchtend ? '09:00â13:00' : '13:00â17:00';
-    const mavdNextLabel = isOchtend ? `${pair[1]} (13:00â17:00)` : (dayOfWeek < 5 ? `${MAVD[dayOfWeek+1][0]} (ma 09:00)` : `${MAVD[1][0]} (ma 09:00)`);
-    
-    document.getElementById('mavdName').innerHTML = `<span>${mavdCurrent}</span>`;
-    document.getElementById('mavdSlot').textContent = (hour >= 9 && hour < 17) ? `Dienst: ${mavdSlotLabel}` : 'Buiten diensttijden';
-    document.getElementById('mavdNext').textContent = `Volgende: ${mavdNextLabel}`;
-  } else {
-    document.getElementById('mavdName').innerHTML = `<span style="color:var(--light)">Weekend</span>`;
-    document.getElementById('mavdSlot').textContent = 'Geen dienst';
-    const nextMon = MAVD[1][0];
-    document.getElementById('mavdNext').textContent = `Maandag: ${nextMon} (09:00â13:00)`;
-  }
-}
-
-// JOTFORM LOGGING via Netlify function (uses server-side API key)
-function logToJotform(type, vraag, antwoord, naam) {
-  try {
-    fetch('/.netlify/functions/log', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        type: type,
-        vraag: (vraag || '').substring(0, 500),
-        antwoord: (antwoord || '').substring(0, 1000),
-        tijdstip: new Date().toLocaleString('nl-NL'),
-        naam: naam || ''
-      })
-    }).catch(() => {});
-  } catch(e) {}
-}
-
-// WACHTWOORD VERGETEN
-function toonWachtwoordVergeten() {
-  const form = document.getElementById('wwVergetenForm');
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
-  const email = document.getElementById('loginEmail')?.value;
-  if (email) document.getElementById('wwEmail').value = email;
-}
-
-async function vraagResetLink() {
-  const email = document.getElementById('wwEmail').value.trim();
-  const msgEl = document.getElementById('wwMsg');
-  if (!email) { msgEl.textContent = 'Vul je e-mailadres in.'; return; }
-  
-  msgEl.textContent = 'Bezig...';
-  try {
-    const res = await fetch('/.netlify/functions/wachtwoord', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ action: 'generateLink', email })
-    });
-    const data = await res.json();
-    if (data.error) {
-      msgEl.textContent = data.error;
-    } else if (data.emailSent) {
-      msgEl.style.color = '#16a34a';
-      msgEl.textContent = 'E-mail verstuurd! Controleer je inbox.';
-    } else {
-      msgEl.textContent = 'Neem contact op met Ton Coffeng â e-mail kon niet worden verstuurd.';
-    }
-  } catch(e) {
-    msgEl.textContent = 'Er ging iets mis. Probeer opnieuw.';
-  }
-}
-
-// LOGOUT
-
-function doLogout() {
-  localStorage.removeItem('mvaToken');
-  localStorage.removeItem('mvaLevel');
-  localStorage.removeItem('mvaName');
-  window._mvaToken = null;
-  location.reload();
-}
-
-// LOGIN - restore token from session on load
-(function() {
-  const saved = localStorage.getItem('mvaToken');
-  if (saved) {
-    window._mvaToken = saved;
-    window._mvaLevel = localStorage.getItem('mvaLevel');
-    window._mvaName = localStorage.getItem('mvaName');
-    const ls = document.getElementById('loginScreen');
-    if (ls) ls.style.display = 'none';
-    const badge = document.querySelector('.header-badge');
-    if (badge && window._mvaName) badge.textContent = window._mvaName;
-    updateDutyWidget();
-    setInterval(updateDutyWidget, 60000); // Update every minute
-    // Show admin link for directie
-    const adminLink = document.getElementById('adminLink');
-    if (adminLink && (window._mvaLevel === 'directie' || localStorage.getItem('mvaLevel') === 'directie')) {
-      adminLink.style.display = 'inline';
-    }
-  }
-})();
-
+    // Geen token — redirect naar portal
+    window.location.href = PORTAL_URL;
+  })();
 function doLogin() {
   const email = document.getElementById('loginEmail')?.value.trim() || '';
   const pw = document.getElementById('loginPassword').value.trim();

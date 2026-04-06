@@ -400,7 +400,7 @@ body {
   .page-footer { padding: 10px 16px; }
 }
 
-/* LOGIN */ 
+/* LOGIN */
 .login-screen {
   position: fixed;
   inset: 0;
@@ -2358,7 +2358,7 @@ function doLogin() {
     body: JSON.stringify({ action: 'login', email, password: pw })
   }).then(r => r.json()).then(data => {
     if (data.token) {
-      window._mvaToken = data.token;
+      window._mvaToken = data.token; 
       window._mvaLevel = data.level;
       window._mvaName = data.name;
       localStorage.setItem('mvaToken', data.token);

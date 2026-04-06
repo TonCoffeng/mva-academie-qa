@@ -672,6 +672,9 @@ body {
     var urlParams = new URLSearchParams(window.location.search);
     var ssoParam = urlParams.get('sso');
     if (ssoParam) {
+      // Direct loginscherm verbergen via style attribute (synchroon)
+      var __ls = document.getElementById('loginScreen');
+      if (__ls) __ls.style.cssText = 'display:none!important';
       try {
         var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
         if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {

@@ -667,65 +667,41 @@ body {
 <script>
 // ── Toegangsbeheer: alleen via portal ──
   (function() {
-    var PORTAL_URL = 'https://mva-intelligence.netlify.app';
-    var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
-    var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
-
-    // Verberg loginscherm altijd direct — toegang alleen via portal
-    var ls = document.getElementById('loginScreen');
-    if (ls) ls.style.display = 'none';
-
-    // Check SSO token in URL
-    var urlParams = new URLSearchParams(window.location.search);
-    var ssoParam = urlParams.get('sso');
-
+    var PORTAL = 'https://mva-intelligence.netlify.app';
+    var SB_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
+    var SB_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
+    var ssoParam = new URLSearchParams(location.search).get('sso');
     if (ssoParam) {
       try {
-        var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
-        if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {
-          fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(ssoData.email) + '&select=naam,level,actief', {
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + ssoData.access_token }
+        var d = JSON.parse(atob(decodeURIComponent(ssoParam)));
+        if (d && d.access_token && d.email && (Date.now() - d.ts < 300000)) {
+          fetch(SB_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(d.email) + '&select=naam,level,actief', {
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + d.access_token }
           }).then(function(r) { return r.json(); }).then(function(data) {
             var g = data && data[0];
-            if (!g || !g.actief) { window.location.href = PORTAL_URL; return; }
-            var level = g.level === 'directie' ? 'directie' : 'makelaar';
-            var token = btoa(JSON.stringify({ email: ssoData.email.toLowerCase(), level: level, ts: Date.now() }));
-            localStorage.setItem('mvaToken', token);
-            localStorage.setItem('mvaLevel', level);
-            localStorage.setItem('mvaName', g.naam);
-            window._mvaToken = token;
-            window._mvaLevel = level;
-            window._mvaName = g.naam;
-            window.history.replaceState({}, '', window.location.pathname);
-            // Toon de app
-            var badge = document.querySelector('.header-badge');
-            if (badge) badge.textContent = g.naam;
-            updateDutyWidget();
-            var adminLink = document.getElementById('adminLink');
-            if (adminLink && level === 'directie') adminLink.style.display = 'inline';
-          }).catch(function() { window.location.href = PORTAL_URL; });
+            if (!g || !g.actief) { location.href = PORTAL; return; }
+            var lv = g.level === 'directie' ? 'directie' : 'makelaar';
+            var tk = btoa(JSON.stringify({ email: d.email.toLowerCase(), level: lv, ts: Date.now() }));
+            localStorage.setItem('mvaToken', tk); localStorage.setItem('mvaLevel', lv); localStorage.setItem('mvaName', g.naam);
+            window._mvaToken = tk; window._mvaLevel = lv; window._mvaName = g.naam;
+            history.replaceState({}, '', location.pathname);
+            var b = document.querySelector('.header-badge'); if (b) b.textContent = g.naam;
+            updateDutyWidget(); setInterval(updateDutyWidget, 60000);
+            var al = document.getElementById('adminLink'); if (al && lv === 'directie') al.style.display = 'inline';
+          }).catch(function() { location.href = PORTAL; });
           return;
         }
       } catch(e) {}
     }
-
-    // Check bestaand token in localStorage
     var saved = localStorage.getItem('mvaToken');
     if (saved) {
-      window._mvaToken = saved;
-      window._mvaLevel = localStorage.getItem('mvaLevel');
-      window._mvaName = localStorage.getItem('mvaName');
-      var badge = document.querySelector('.header-badge');
-      if (badge && window._mvaName) badge.textContent = window._mvaName;
-      updateDutyWidget();
-      setInterval(updateDutyWidget, 60000);
-      var adminLink = document.getElementById('adminLink');
-      if (adminLink && window._mvaLevel === 'directie') adminLink.style.display = 'inline';
+      window._mvaToken = saved; window._mvaLevel = localStorage.getItem('mvaLevel'); window._mvaName = localStorage.getItem('mvaName');
+      var b = document.querySelector('.header-badge'); if (b && window._mvaName) b.textContent = window._mvaName;
+      updateDutyWidget(); setInterval(updateDutyWidget, 60000);
+      var al = document.getElementById('adminLink'); if (al && window._mvaLevel === 'directie') al.style.display = 'inline';
       return;
     }
-
-    // Geen token — redirect naar portal
-    window.location.href = PORTAL_URL;
+    location.href = PORTAL;
   })();
 function doLogin() {
   const email = document.getElementById('loginEmail')?.value.trim() || '';
@@ -1840,27 +1816,7 @@ function doLogout() {
   location.reload();
 }
 
-// LOGIN - restore token from session on load
-(function() {
-  const saved = localStorage.getItem('mvaToken');
-  if (saved) {
-    window._mvaToken = saved;
-    window._mvaLevel = localStorage.getItem('mvaLevel');
-    window._mvaName = localStorage.getItem('mvaName');
-    const ls = document.getElementById('loginScreen');
-    if (ls) ls.style.display = 'none';
-    const badge = document.querySelector('.header-badge');
-    if (badge && window._mvaName) badge.textContent = window._mvaName;
-    updateDutyWidget();
-    setInterval(updateDutyWidget, 60000); // Update every minute
-    // Show admin link for directie
-    const adminLink = document.getElementById('adminLink');
-    if (adminLink && (window._mvaLevel === 'directie' || localStorage.getItem('mvaLevel') === 'directie')) {
-      adminLink.style.display = 'inline';
-    }
-  }
-})();
-
+// Login restore verwerkt in toegangsbeheer
 function doLogin() {
   const email = document.getElementById('loginEmail')?.value.trim() || '';
   const pw = document.getElementById('loginPassword').value.trim();

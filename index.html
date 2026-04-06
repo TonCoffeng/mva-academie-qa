@@ -504,9 +504,6 @@ body {
   display: none;
 }
 
-
-/* SSO: verberg loginscherm als token in URL of localStorage */
-body.sso-actief .login-screen { display: none !important; }
 </style>
 </head>
 <body>
@@ -675,7 +672,6 @@ body.sso-actief .login-screen { display: none !important; }
     var urlParams = new URLSearchParams(window.location.search);
     var ssoParam = urlParams.get('sso');
     if (ssoParam) {
-      document.body && document.body.classList.add('sso-actief');
       try {
         var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
         if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {
@@ -692,7 +688,16 @@ body.sso-actief .login-screen { display: none !important; }
             localStorage.setItem('mvaLevel', level);
             localStorage.setItem('mvaName', g.naam);
             window.history.replaceState({}, '', window.location.pathname);
-            window.location.reload();
+            window._mvaToken = token;
+            window._mvaLevel = level;
+            window._mvaName = g.naam;
+            var ls = document.getElementById('loginScreen');
+            if (ls) ls.style.display = 'none';
+            var badge = document.querySelector('.header-badge');
+            if (badge) badge.textContent = g.naam;
+            updateDutyWidget();
+            var adminLink = document.getElementById('adminLink');
+            if (adminLink && level === 'directie') adminLink.style.display = 'inline';
           }).catch(function() {});
           return;
         }

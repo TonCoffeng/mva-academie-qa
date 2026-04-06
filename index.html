@@ -1,22 +1,6 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<script>if(new URLSearchParams(location.search).get('sso')||localStorage.getItem('mvaToken')){document.write('<style>#loginScreen{display:none!important}</style>');}</script>
-<script>
-// Verberg loginscherm direct als SSO token aanwezig - geen flits
-(function() {
-  if (new URLSearchParams(window.location.search).get('sso') || localStorage.getItem('mvaToken')) {
-    document.addEventListener('DOMContentLoaded', function() {
-      var ls = document.getElementById('loginScreen');
-      if (ls) ls.style.display = 'none';
-    });
-    // Ook via CSS meteen
-    var style = document.createElement('style');
-    style.textContent = '.login-screen { display: none !important; }';
-    document.head && document.head.appendChild(style);
-  }
-})();
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MVA Academie â Vraag & Antwoord</title>
@@ -520,6 +504,9 @@ body {
   display: none;
 }
 
+
+/* SSO: verberg loginscherm als token in URL of localStorage */
+body.sso-actief .login-screen { display: none !important; }
 </style>
 </head>
 <body>
@@ -688,9 +675,7 @@ body {
     var urlParams = new URLSearchParams(window.location.search);
     var ssoParam = urlParams.get('sso');
     if (ssoParam) {
-      // Verberg loginscherm direct - laat geen flits zien
-      var lsEl = document.getElementById('loginScreen');
-      if (lsEl) lsEl.style.display = 'none';
+      document.body && document.body.classList.add('sso-actief');
       try {
         var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
         if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {

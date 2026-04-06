@@ -2366,7 +2366,7 @@ function doLogin() {
       localStorage.setItem('mvaName', data.name || email);
       document.getElementById('loginScreen').style.display = 'none';
       const badge = document.querySelector('.header-badge');
-      if (badge) badge.textContent = data.name || email; 
+      if (badge) badge.textContent = data.name || email;
       updateDutyWidget();
       setInterval(updateDutyWidget, 60000);
       // Show admin link for directie

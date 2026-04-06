@@ -665,7 +665,32 @@ body {
 </div>
 
 <script>
-let history = [];
+// ── SSO: Automatisch inloggen via Supabase portal sessie ──
+(function() {
+  var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
+  if (localStorage.getItem('mvaToken')) return;
+  try {
+    var sessieRaw = localStorage.getItem('sb-ehqtyhoeubchcwfavdzr-auth-token');
+    if (!sessieRaw) return;
+    var sessie = JSON.parse(sessieRaw);
+    if (!sessie || !sessie.access_token || !sessie.user) return;
+    var email = sessie.user.email;
+    if (!email) return;
+    fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(email) + '&select=naam,level,actief', {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + sessie.access_token }
+    }).then(function(r) { return r.json(); }).then(function(data) {
+      var g = data && data[0];
+      if (!g || !g.actief) return;
+      var level = g.level === 'directie' ? 'directie' : 'makelaar';
+      var token = btoa(JSON.stringify({ email: email.toLowerCase(), level: level, ts: Date.now() }));
+      localStorage.setItem('mvaToken', token);
+      localStorage.setItem('mvaLevel', level);
+      localStorage.setItem('mvaName', g.naam);
+      window.location.reload();
+    }).catch(function() {});
+  } catch(e) {}
+})();let history = [];
 let loading = false;
 
 function autoResize(el) {

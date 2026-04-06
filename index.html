@@ -2358,7 +2358,7 @@ function doLogin() {
     body: JSON.stringify({ action: 'login', email, password: pw })
   }).then(r => r.json()).then(data => {
     if (data.token) {
-      window._mvaToken = data.token; 
+      window._mvaToken = data.token;
       window._mvaLevel = data.level;
       window._mvaName = data.name;
       localStorage.setItem('mvaToken', data.token);
@@ -2366,7 +2366,7 @@ function doLogin() {
       localStorage.setItem('mvaName', data.name || email);
       document.getElementById('loginScreen').style.display = 'none';
       const badge = document.querySelector('.header-badge');
-      if (badge) badge.textContent = data.name || email;
+      if (badge) badge.textContent = data.name || email; 
       updateDutyWidget();
       setInterval(updateDutyWidget, 60000);
       // Show admin link for directie

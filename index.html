@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
+<script>
+// Verberg loginscherm direct als SSO token aanwezig - geen flits
+(function() {
+  if (new URLSearchParams(window.location.search).get('sso') || localStorage.getItem('mvaToken')) {
+    document.addEventListener('DOMContentLoaded', function() {
+      var ls = document.getElementById('loginScreen');
+      if (ls) ls.style.display = 'none';
+    });
+    // Ook via CSS meteen
+    var style = document.createElement('style');
+    style.textContent = '.login-screen { display: none !important; }';
+    document.head && document.head.appendChild(style);
+  }
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MVA Academie â Vraag & Antwoord</title>

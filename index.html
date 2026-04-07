@@ -674,7 +674,7 @@ body {
     if (ssoParam) {
       try {
         var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
-        if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {
+        if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 3600000)) {
           var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
           var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
           fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(ssoData.email) + '&select=naam,level,actief', {

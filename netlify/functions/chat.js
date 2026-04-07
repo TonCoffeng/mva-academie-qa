@@ -217,33 +217,31 @@ exports.handler = async function(event, context) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing messages' }) };
   }
 
-  // Verify token via auth function
+  // Verify token
   let accessLevel = null;
   let userName = null;
   try {
-    const crypto = require('crypto');
     const decoded = Buffer.from(token || '', 'base64').toString('utf8');
-    const parts = decoded.split(':');
-    if (parts.length < 3) throw new Error('Invalid token');
-    
-    const [email, level, timestamp] = parts;
-    
-    // Token expires after 8 hours
-    if (Date.now() - parseInt(timestamp) > 24 * 60 * 60 * 1000) {
+    // Probeer JSON formaat
+    let email, level, timestamp;
+    try {
+      const parsed = JSON.parse(decoded);
+      email = parsed.email;
+      level = parsed.level;
+      timestamp = parsed.ts;
+    } catch {
+      // Fallback: email:level:timestamp formaat
+      const parts = decoded.split(':');
+      email = parts[0];
+      level = parts[1];
+      timestamp = parseInt(parts[2]);
+    }
+    if (!email || !level) throw new Error('Invalid token');
+    if (Date.now() - timestamp > 24 * 60 * 60 * 1000) {
       return { statusCode: 401, body: JSON.stringify({ error: 'Sessie verlopen' }) };
     }
-
-    // Verify user exists and is active
-    const usersJson = process.env.MVA_USERS;
-    const users = usersJson ? JSON.parse(usersJson) : {};
-    const user = users[email?.toLowerCase()];
-    
-    if (!user || !user.active) {
-      return { statusCode: 401, body: JSON.stringify({ error: 'unauthorized' }) };
-    }
-    
     accessLevel = level;
-    userName = user.name;
+    userName = email.split('@')[0];
   } catch(e) {
     // Fallback to legacy token check during transition
     const makelaarToken = process.env.TOKEN_MAKELAAR;

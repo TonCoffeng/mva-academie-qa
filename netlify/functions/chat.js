@@ -222,33 +222,22 @@ exports.handler = async function(event, context) {
   let userName = null;
   try {
     const decoded = Buffer.from(token || '', 'base64').toString('utf8');
-    // Probeer JSON formaat
-    let email, level, timestamp;
+    let email, level, ts;
     try {
-      const parsed = JSON.parse(decoded);
-      email = parsed.email;
-      level = parsed.level;
-      timestamp = parsed.ts;
+      const p = JSON.parse(decoded);
+      email = p.email; level = p.level; ts = p.ts;
     } catch {
-      // Fallback: email:level:timestamp formaat
       const parts = decoded.split(':');
-      email = parts[0];
-      level = parts[1];
-      timestamp = parseInt(parts[2]);
+      email = parts[0]; level = parts[1]; ts = parseInt(parts[2]);
     }
-    if (!email || !level) throw new Error('Invalid token');
-    if (Date.now() - timestamp > 24 * 60 * 60 * 1000) {
+    if (!email || !level || !ts) throw new Error('invalid');
+    if (Date.now() - ts > 24 * 60 * 60 * 1000) {
       return { statusCode: 401, body: JSON.stringify({ error: 'Sessie verlopen' }) };
     }
     accessLevel = level;
     userName = email.split('@')[0];
   } catch(e) {
-    // Fallback to legacy token check during transition
-    const makelaarToken = process.env.TOKEN_MAKELAAR;
-    const directieToken = process.env.TOKEN_DIRECTIE;
-    if (token === makelaarToken) accessLevel = 'makelaar';
-    else if (token === directieToken) accessLevel = 'directie';
-    else return { statusCode: 401, body: JSON.stringify({ error: 'unauthorized' }) };
+    return { statusCode: 401, body: JSON.stringify({ error: 'unauthorized' }) };
   }
 
   const trimmedMessages = messages.slice(-6);

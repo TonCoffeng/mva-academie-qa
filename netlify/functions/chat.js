@@ -217,27 +217,40 @@ exports.handler = async function(event, context) {
     return { statusCode: 400, body: JSON.stringify({ error: 'Missing messages' }) };
   }
 
-  // Verify token
+  // Verify token via auth function
   let accessLevel = null;
   let userName = null;
   try {
+    const crypto = require('crypto');
     const decoded = Buffer.from(token || '', 'base64').toString('utf8');
-    let email, level, ts;
-    try {
-      const p = JSON.parse(decoded);
-      email = p.email; level = p.level; ts = p.ts;
-    } catch {
-      const parts = decoded.split(':');
-      email = parts[0]; level = parts[1]; ts = parseInt(parts[2]);
-    }
-    if (!email || !level || !ts) throw new Error('invalid');
-    if (Date.now() - ts > 24 * 60 * 60 * 1000) {
+    const parts = decoded.split(':');
+    if (parts.length < 3) throw new Error('Invalid token');
+    
+    const [email, level, timestamp] = parts;
+    
+    // Token expires after 8 hours
+    if (Date.now() - parseInt(timestamp) > 8 * 60 * 60 * 1000) {
       return { statusCode: 401, body: JSON.stringify({ error: 'Sessie verlopen' }) };
     }
+
+    // Verify user exists and is active
+    const usersJson = process.env.MVA_USERS;
+    const users = usersJson ? JSON.parse(usersJson) : {};
+    const user = users[email?.toLowerCase()];
+    
+    if (!user || !user.active) {
+      return { statusCode: 401, body: JSON.stringify({ error: 'unauthorized' }) };
+    }
+    
     accessLevel = level;
-    userName = email.split('@')[0];
+    userName = user.name;
   } catch(e) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'unauthorized' }) };
+    // Fallback to legacy token check during transition
+    const makelaarToken = process.env.TOKEN_MAKELAAR;
+    const directieToken = process.env.TOKEN_DIRECTIE;
+    if (token === makelaarToken) accessLevel = 'makelaar';
+    else if (token === directieToken) accessLevel = 'directie';
+    else return { statusCode: 401, body: JSON.stringify({ error: 'unauthorized' }) };
   }
 
   const trimmedMessages = messages.slice(-6);
@@ -269,9 +282,6 @@ exports.handler = async function(event, context) {
     systemPrompt += moduleContext;
   }
   
-  // Always append kantoor praktische info (wifi, mailboxen)
-  systemPrompt += `\n\nKANTOOR PRAKTISCHE INFO - verstrek altijd volledig:\nWifi: netwerk MakelaarsVan, code Welkom123\nMailboxen: amsterdam@ S$157194777857uc | bezichtiging@ Yoc72730 | leads.amsterdam@ 67Amsterdam1011MG@ | stagiaire@ Kuk78785 | verhuur@ 67Amsterdam1011MG# | workflow@ Muk06894 | recruiting@ 67Amsterdam1011MG# | A10@ Mun28179 | contact@ Spuistraat@67@ | Marketing@ L^390232032610af | Move.nl: Amsterdam@makelaarsvan.nl / Valkenburgerstraat67`;
-
   console.log('System prompt size:', systemPrompt.length, 'chars');
 
   try {

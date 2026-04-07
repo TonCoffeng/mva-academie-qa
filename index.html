@@ -668,65 +668,29 @@ body {
 // ── SSO: Automatisch inloggen via portal ──
   (function() {
     if (localStorage.getItem('mvaToken')) return;
-
     var urlParams = new URLSearchParams(window.location.search);
     var ssoParam = urlParams.get('sso');
-    if (ssoParam) {
-      try {
-        var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
-        if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {
-          var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
-          var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
-          fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(ssoData.email) + '&select=naam,level,actief', {
-            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + ssoData.access_token }
-          }).then(function(r) { return r.json(); }).then(function(data) {
-            var g = data && data[0];
-            if (!g || !g.actief) return;
-            var level = g.level === 'directie' ? 'directie' : 'makelaar';
-            var token = btoa(JSON.stringify({ email: ssoData.email.toLowerCase(), level: level, ts: Date.now() }));
-            localStorage.setItem('mvaToken', token);
-            localStorage.setItem('mvaLevel', level);
-            localStorage.setItem('mvaName', g.naam);
-            window.history.replaceState({}, '', window.location.pathname);
-            window._mvaToken = token;
-            window._mvaLevel = level;
-            window._mvaName = g.naam;
-            var ls = document.getElementById('loginScreen');
-            if (ls) ls.style.display = 'none';
-            var badge = document.querySelector('.header-badge');
-            if (badge) badge.textContent = g.naam;
-            updateDutyWidget();
-            var adminLink = document.getElementById('adminLink');
-            if (adminLink && level === 'directie') adminLink.style.display = 'inline';
-          }).catch(function() {});
-          return;
-        }
-      } catch(e) {}
-    }
-
+    if (!ssoParam) return;
     try {
-      var sessieRaw = localStorage.getItem('sb-ehqtyhoeubchcwfavdzr-auth-token');
-      if (!sessieRaw) return;
-      var sessie = JSON.parse(sessieRaw);
-      if (!sessie || !sessie.access_token || !sessie.user) return;
-      var email = sessie.user.email;
-      if (!email) return;
-      var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
-      var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
-      fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(email) + '&select=naam,level,actief', {
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + sessie.access_token }
-      }).then(function(r) { return r.json(); }).then(function(data) {
-        var g = data && data[0];
-        if (!g || !g.actief) return;
-        var level = g.level === 'directie' ? 'directie' : 'makelaar';
-        var token = btoa(JSON.stringify({ email: email.toLowerCase(), level: level, ts: Date.now() }));
-        localStorage.setItem('mvaToken', token);
-        localStorage.setItem('mvaLevel', level);
-        localStorage.setItem('mvaName', g.naam);
-        window.location.reload();
-      }).catch(function() {});
+      var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
+      if (!ssoData || !ssoData.access_token || !ssoData.email) return;
+      if (Date.now() - ssoData.ts > 3600000) return;
+      var email = ssoData.email.toLowerCase();
+      var level = (email === 'toncoffeng@makelaarsvan.nl' || email === 'hanskoppes@makelaarsvan.nl') ? 'directie' : 'makelaar';
+      var naam = email.split('@')[0];
+      // Token in het correcte format dat chat.js verwacht
+      var token = btoa(JSON.stringify({ email: email, level: level, ts: Date.now() }));
+      localStorage.setItem('mvaToken', token);
+      localStorage.setItem('mvaLevel', level);
+      localStorage.setItem('mvaName', naam);
+      window.history.replaceState({}, '', window.location.pathname);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('chatWrap').style.display = 'flex';
+      var badge = document.querySelector('.header-badge');
+      if (badge) badge.textContent = naam;
+      if (typeof updateDutyWidget === 'function') updateDutyWidget();
     } catch(e) {}
-  })();let history = [];
+  })();et history = [];
 let loading = false;
 
 function autoResize(el) {
@@ -1600,7 +1564,7 @@ se;
   position: fixed;
   inset: 0;
   background: var(--navy);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;

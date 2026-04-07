@@ -229,7 +229,7 @@ exports.handler = async function(event, context) {
     const [email, level, timestamp] = parts;
     
     // Token expires after 8 hours
-    if (Date.now() - parseInt(timestamp) > 8 * 60 * 60 * 1000) {
+    if (Date.now() - parseInt(timestamp) > 24 * 60 * 60 * 1000) {
       return { statusCode: 401, body: JSON.stringify({ error: 'Sessie verlopen' }) };
     }
 

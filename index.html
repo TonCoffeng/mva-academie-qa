@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MVA Academie Ã¢ÂÂ Vraag & Antwoord</title>
+<title>MVA Academie â Vraag & Antwoord</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -56,1167 +56,6 @@ body {
   font-weight: 700;
   color: rgba(255,255,255,.5);
   text-transform: uppercase;
-  letter-spacing: .08em;
-  white-space: nowrap;
-}
-
-/* LAYOUT */
-.body-wrap {
-  flex: 1;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  max-width: 860px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-/* CHIPS */
-.chips-wrap {
-  padding: 16px 0 12px;
-  flex-shrink: 0;
-}
-.chips-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--light);
-  margin-bottom: 8px;
-}
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-.chip {
-  padding: 5px 12px;
-  background: white;
-  border: 1.5px solid var(--border);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--mid);
-  cursor: pointer;
-  transition: all .15s;
-  font-family: inherit;
-  line-height: 1.4;
-}
-.chip:hover { border-color: var(--orange); color: var(--orange); background: #FFF5F0; }
-
-/* CHAT */
-.chat-wrap {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 8px 0 16px;
-}
-.chat-wrap::-webkit-scrollbar { width: 4px; }
-.chat-wrap::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
-
-/* WELCOME */
-.welcome {
-  background: white;
-  border: 1px solid var(--border);
-  border-top: 4px solid var(--orange);
-  padding: 22px 26px;
-}
-.welcome-title { font-size: 16px; font-weight: 900; color: var(--navy); margin-bottom: 8px; }
-.welcome-title span { color: var(--orange); }
-.welcome-body { font-size: 13px; color: var(--mid); line-height: 1.65; margin-bottom: 14px; }
-.welcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.welcome-item { background: var(--bg); border: 1px solid var(--border); padding: 9px 12px; }
-.welcome-item-title { font-size: 10px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
-.welcome-item-sub { font-size: 11px; color: var(--light); }
-
-/* MESSAGES */
-.msg {
-  display: flex;
-  gap: 10px;
-  animation: fadeUp .2s ease;
-}
-.msg.user { flex-direction: row-reverse; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-.msg-avatar {
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: .04em;
-}
-.msg.assistant .msg-avatar { background: var(--navy); color: var(--orange); }
-.msg.user .msg-avatar { background: var(--orange); color: white; }
-
-.msg-bubble {
-  max-width: 80%;
-  padding: 12px 16px;
-  font-size: 13px;
-  line-height: 1.65;
-}
-.msg.assistant .msg-bubble {
-  background: white;
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--navy);
-  color: var(--dark);
-}
-.msg.user .msg-bubble {
-  background: var(--navy);
-  color: white;
-}
-
-/* Formatted content inside bubbles */
-.msg-bubble p { margin: 0 0 6px; }
-.msg-bubble p:last-of-type { margin-bottom: 0; }
-.msg-bubble .msg-h1 { font-size: 15px; font-weight: 900; color: var(--navy); margin: 14px 0 6px; }
-.msg-bubble .msg-h2 { font-size: 13px; font-weight: 900; color: var(--navy); margin: 12px 0 4px; }
-.msg-bubble .msg-h3 { font-size: 11px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .06em; margin: 10px 0 4px; }
-.msg-bubble .msg-li { padding: 2px 0 2px 10px; border-left: 2px solid #E8E8E8; margin: 2px 0; }
-.msg-bubble .msg-sep { height: 6px; }
-.msg-bubble strong { color: var(--orange); font-weight: 700; }
-
-/* Action buttons */
-.msg-actions {
-  display: flex;
-  gap: 6px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-.action-btn {
-  padding: 4px 10px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--light);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.action-btn:hover { color: var(--orange); border-color: var(--orange); background: #FFF5F0; }
-
-/* Typing */
-.typing-dots {
-  display: flex;
-  gap: 5px;
-  padding: 12px 16px;
-  background: white;
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--navy);
-  align-items: center;
-}
-.dot {
-  width: 7px;
-  height: 7px;
-  background: var(--navy);
-  border-radius: 50%;
-  animation: bounce 1.2s infinite;
-}
-.dot:nth-child(2) { animation-delay: .2s; }
-.dot:nth-child(3) { animation-delay: .4s; }
-@keyframes bounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: .35; }
-  30% { transform: translateY(-5px); opacity: 1; }
-}
-
-/* ERROR */
-.error-bar {
-  background: #FFF3E0;
-  border: 1px solid #FFB74D;
-  border-left: 3px solid var(--orange);
-  padding: 10px 14px;
-  font-size: 12px;
-  color: #7B3A00;
-}
-
-/* INPUT */
-.input-wrap {
-  flex-shrink: 0;
-  padding: 0 0 16px;
-}
-.input-box {
-  display: flex;
-  background: white;
-  border: 2px solid var(--border);
-  transition: border-color .15s;
-}
-.input-box:focus-within { border-color: var(--navy); }
-#userInput {
-  flex: 1;
-  border: none;
-  outline: none;
-  padding: 12px 14px;
-  font-size: 14px;
-  font-family: inherit;
-  resize: none;
-  background: transparent;
-  color: var(--dark);
-  line-height: 1.5;
-  max-height: 100px;
-  overflow-y: auto;
-}
-#userInput::placeholder { color: #bbb; }
-.send-btn {
-  width: 46px;
-  height: 46px;
-  background: var(--navy);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  align-self: flex-end;
-  transition: background .15s;
-  flex-shrink: 0;
-}
-.send-btn:hover:not(:disabled) { background: var(--orange); }
-.send-btn:disabled { background: var(--border); cursor: not-allowed; }
-.send-btn svg { fill: white; width: 17px; height: 17px; }
-.input-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
-  padding: 0 2px;
-}
-.input-hint { font-size: 11px; color: #bbb; }
-.clear-btn {
-  font-size: 11px;
-  color: #bbb;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: inherit;
-  text-decoration: underline;
-}
-.clear-btn:hover { color: var(--orange); }
-
-/* MODAL */
-.modal-bg {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.5);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.modal-bg.open { display: flex; }
-.modal {
-  background: white;
-  width: 100%;
-  max-width: 500px;
-  border-top: 4px solid var(--orange);
-}
-.modal-header {
-  background: var(--navy);
-  padding: 14px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.modal-title { font-size: 13px; font-weight: 900; color: white; }
-.modal-close {
-  background: none;
-  border: none;
-  color: rgba(255,255,255,.6);
-  font-size: 22px;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-}
-.modal-body { padding: 18px 20px; }
-.modal-hint { font-size: 12px; color: var(--light); margin-bottom: 14px; line-height: 1.5; }
-.modal-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-bottom: 5px; }
-.modal-textarea {
-  width: 100%;
-  border: 2px solid var(--border);
-  padding: 10px;
-  font-size: 13px;
-  font-family: inherit;
-  resize: vertical;
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
-.modal-textarea:focus { outline: none; border-color: var(--navy); }
-.modal-context {
-  width: 100%;
-  border: 1px solid #EBEBEB;
-  padding: 8px 10px;
-  font-size: 11px;
-  font-family: inherit;
-  color: #aaa;
-  background: var(--bg);
-  resize: none;
-  margin-bottom: 16px;
-}
-.modal-footer { display: flex; gap: 8px; justify-content: flex-end; }
-.btn-cancel {
-  padding: 9px 16px;
-  background: none;
-  border: 1px solid var(--border);
-  font-size: 13px;
-  cursor: pointer;
-  font-family: inherit;
-  color: var(--mid);
-}
-.btn-submit {
-  padding: 9px 18px;
-  background: var(--navy);
-  color: white;
-  border: none;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background .15s;
-}
-.btn-submit:hover { background: var(--orange); }
-
-/* FOOTER */
-.page-footer {
-  background: var(--navy);
-  border-top: 3px solid var(--orange);
-  padding: 10px 32px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-shrink: 0;
-}
-.pf-brand { font-size: 9px; font-weight: 900; color: var(--orange); text-transform: uppercase; letter-spacing: .08em; }
-.pf-info { font-size: 9px; color: rgba(255,255,255,.3); }
-
-@media (max-width: 600px) {
-  .header { padding: 12px 16px; }
-  .header-badge { display: none; }
-  .body-wrap { padding: 0 12px; }
-  .welcome-grid { grid-template-columns: 1fr; }
-  .page-footer { padding: 10px 16px; }
-}
-
-/* LOGIN */
-.login-screen {
-  position: fixed;
-  inset: 0;
-  background: var(--navy);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  flex-direction: column;
-  gap: 0;
-}
-.login-box {
-  background: white;
-  width: 100%;
-  max-width: 400px;
-  border-top: 4px solid var(--orange);
-  padding: 36px 32px;
-}
-.login-logo { margin-bottom: 24px; }
-.login-logo-top { font-size: 11px; font-weight: 900; color: var(--orange); text-transform: uppercase; letter-spacing: .1em; }
-.login-logo-bot { font-size: 11px; font-weight: 900; color: var(--navy); text-transform: uppercase; letter-spacing: .1em; }
-.login-title { font-size: 20px; font-weight: 900; color: var(--navy); margin-bottom: 6px; }
-.login-title span { color: var(--orange); }
-.login-sub { font-size: 13px; color: var(--light); margin-bottom: 24px; }
-.login-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-bottom: 6px; }
-.login-input {
-  width: 100%;
-  border: 2px solid var(--border);
-  padding: 11px 14px;
-  font-size: 14px;
-  font-family: inherit;
-  margin-bottom: 16px;
-  color: var(--dark);
-}
-.login-input:focus { outline: none; border-color: var(--navy); }
-.login-btn {
-  width: 100%;
-  background: var(--navy);
-  color: white;
-  border: none;
-  padding: 13px;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background .15s;
-}
-.login-btn:hover { background: var(--orange); }
-
-.duty-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-bottom: 8px; }
-.duty-name { font-size: 18px; font-weight: 900; color: var(--navy); }
-.duty-name span { color: var(--orange); }
-.duty-slot { font-size: 12px; color: var(--light); margin-top: 2px; }
-.duty-next { font-size: 11px; color: var(--light); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
-.duty-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin: 0 auto 20px;
-  max-width: 700px;
-}
-.duty-widget {
-  border: 1px solid var(--border);
-  border-top: 3px solid var(--orange);
-  background: white;
-  padding: 14px 18px;
-}
-.duty-widget.lead { border-top-color: var(--navy); }
-.sources {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border);
-}
-.source-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--navy);
-  text-decoration: none;
-  background: #F0F3FA;
-  border: 1px solid #D0D8EE;
-  padding: 4px 10px;
-  letter-spacing: .04em;
-  transition: all .15s;
-}
-.source-link:hover { background: var(--navy); color: white; }
-.source-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-.login-error {
-  background: #FFF3E0;
-  border: 1px solid #FFB74D;
-  border-left: 3px solid var(--orange);
-  padding: 10px 14px;
-  font-size: 12px;
-  color: #7B3A00;
-  margin-bottom: 16px;
-  display: none;
-}
-
-
-</head>
-<body>
-
-<!-- Netlify form (hidden) -->
-<form name="mva-melding" netlify netlify-honeypot="bot-field" hidden>
-  <input type="hidden" name="form-name" value="mva-melding">
-  <input name="bot-field">
-  <input name="type">
-  <textarea name="melding"></textarea>
-  <textarea name="antwoord"></textarea>
-</form>
-
-
-<!-- LOGIN SCREEN -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">
-      <div class="login-logo-top">MAKELAARSVAN.</div>
-      <div class="login-logo-bot">AMSTERDAM</div>
-    </div>
-    <div class="login-title">MVA <span>Academie</span></div>
-    <div class="login-sub">Vraag & Antwoord Assistent Ã¢ÂÂ log in om verder te gaan</div>
-    <div class="login-error" id="loginError">Ongeldig wachtwoord. Probeer opnieuw.</div>
-    <div class="login-label">E-mailadres</div>
-    <input type="email" class="login-input" id="loginEmail" placeholder="jouw@makelaarsvan.nl" onkeydown="if(event.key==='Enter') document.getElementById('loginPassword').focus()">
-    <div class="login-label">Wachtwoord</div>
-    <input type="password" class="login-input" id="loginPassword" placeholder="Jouw wachtwoord" onkeydown="if(event.key==='Enter') doLogin()">
-    <button class="login-btn" onclick="doLogin()">Inloggen Ã¢ÂÂ</button>
-      <div style="text-align:center;margin-top:12px">
-        <a href="#" style="font-size:12px;color:#888;text-decoration:none" onclick="toonWachtwoordVergeten();return false;">
-          Wachtwoord vergeten?
-        </a>
-        <div id="wwVergetenForm" style="display:none;margin-top:12px;text-align:left">
-          <input class="login-input" id="wwEmail" type="email" placeholder="Jouw e-mailadres" style="margin-bottom:8px">
-          <button class="login-btn" onclick="vraagResetLink()" style="font-size:13px;padding:10px">Stuur reset link Ã¢ÂÂ</button>
-          <div id="wwMsg" style="font-size:12px;color:#888;margin-top:8px;text-align:center"></div>
-        </div>
-      </div>
-    <div style="font-size:11px;color:#bbb;text-align:center;margin-top:12px;">Geen toegang? Neem contact op met Ton Coffeng</div>
-  </div>
-</div>
-
-
-<!-- DUTY WIDGETS - shown after login -->
-<div class="duty-grid" id="dutyGrid" style="display:none">
-  <div class="duty-widget lead">
-    <div class="duty-label">Ã°ÂÂÂ Leaddistributie Ã¢ÂÂ Aan de beurt</div>
-    <div class="duty-name" id="dutyName">Ã¢ÂÂ</div>
-    <div class="duty-slot" id="dutySlot">Ã¢ÂÂ</div>
-    <div class="duty-next" id="dutyNext">Ã¢ÂÂ</div>
-  </div>
-  <div class="duty-widget">
-    <div class="duty-label">Ã°ÂÂÂ  Makelaar van Dienst</div>
-    <div class="duty-name" id="mavdName">Ã¢ÂÂ</div>
-    <div class="duty-slot" id="mavdSlot">Ã¢ÂÂ</div>
-    <div class="duty-next" id="mavdNext">Ã¢ÂÂ</div>
-  </div>
-</div>
-
-<div class="header">
-  <div class="logo-wrap">
-    <div class="logo-top">MAKELAARSVAN.</div>
-    <div class="logo-bot">AMSTERDAM</div>
-  </div>
-  <div class="header-div"></div>
-  <div class="header-text">
-    <div class="header-title">MVA <span>Academie</span> Ã¢ÂÂ Vraag & Antwoord</div>
-    <div class="header-sub">Stel een vraag over onboarding, workflows, systemen of Ninja Selling</div>
-  </div>
-  <div class="header-badge">AI Assistent</div>
-  <a id="adminLink" href="/admin.html" style="display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:5px 12px;font-size:10px;font-weight:700;font-family:inherit;text-transform:uppercase;letter-spacing:.06em;margin-left:8px;text-decoration:none;transition:all .15s;" onmouseover="this.style.background='rgba(232,80,10,.3)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">Ã¢ÂÂ Beheer</a>
-  <button onclick="doLogout()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:5px 12px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;text-transform:uppercase;letter-spacing:.06em;margin-left:8px;transition:all .15s;" onmouseover="this.style.background='rgba(232,80,10,.3)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">Uitloggen</button>
-</div>
-
-<div class="body-wrap">
-
-  <div class="chips-wrap">
-    <div class="chips-label">Veelgestelde vragen</div>
-    <div class="chips" id="chips">
-      <button class="chip" onclick="sendChip(this)">Hoe werkt de WWFT-check?</button>
-      <button class="chip" onclick="sendChip(this)">Wat is de Ninja Nine?</button>
-      <button class="chip" onclick="sendChip(this)">Wanneer stuur ik een conceptfactuur?</button>
-      <button class="chip" onclick="sendChip(this)">Hoe stel ik een OTD op?</button>
-      <button class="chip" onclick="sendChip(this)">Wat is mijn courtage in Level 1?</button>
-      <button class="chip" onclick="sendChip(this)">Wat doet WPTC?</button>
-      <button class="chip" onclick="sendChip(this)">Hoe werkt floortime?</button>
-      <button class="chip" onclick="sendChip(this)">Wie zijn mijn mentoren?</button>
-    </div>
-  </div>
-
-  <div class="chat-wrap" id="chatWrap">
-    <div class="welcome" id="welcome">
-      <div class="welcome-title">Welkom bij de MVA <span>Academie</span> Assistent</div>
-      <div class="welcome-body">Stel een vraag over jouw onboarding, de werkwijze van MVA, systemen, Ninja Selling of financiÃÂ«le zaken. De assistent antwoordt op basis van het MVA Academie leerpad.</div>
-      <div class="welcome-grid">
-        <div class="welcome-item"><div class="welcome-item-title">Fase 1 Ã¢ÂÂ Dag 1Ã¢ÂÂ30</div><div class="welcome-item-sub">Formaliteiten, systemen, eerste bezichtiging</div></div>
-        <div class="welcome-item"><div class="welcome-item-title">Ninja Selling</div><div class="welcome-item-sub">4 principes, Ninja Nine, FORD, ochtendritueel</div></div>
-        <div class="welcome-item"><div class="welcome-item-title">Workflows</div><div class="welcome-item-sub">Aankoop & verkoop stap voor stap in Effytool</div></div>
-        <div class="welcome-item"><div class="welcome-item-title">Financieel</div><div class="welcome-item-sub">Snelstart, BTW, courtage, deadlines</div></div>
-        <div class="welcome-item"><div class="welcome-item-title">Systemen & Leveranciers</div><div class="welcome-item-sub">WPTC, Realworks, Effytool, Yisual, Homeshow</div></div>
-        <div class="welcome-item"><div class="welcome-item-title">Team MVA</div><div class="welcome-item-sub">Alle 12 makelaars, mentoren, directie</div></div>
-      </div>
-    </div>
-    <div id="anchor"></div>
-  </div>
-
-  <div class="input-wrap">
-    <div class="input-box">
-      <textarea id="userInput" rows="1"
-        placeholder="Stel een vraag aan de MVA AcademieÃ¢ÂÂ¦"
-        onkeydown="handleKey(event)"
-        oninput="autoResize(this)"></textarea>
-      <button class="send-btn" id="sendBtn" onclick="send()" title="Versturen">
-        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-    <div class="input-footer">
-      <span class="input-hint">Enter = versturen &middot; Shift+Enter = nieuwe regel</span>
-      <button class="clear-btn" id="clearBtn" style="display:none" onclick="clearChat()">Gesprek wissen</button>
-    </div>
-  </div>
-
-</div>
-
-<!-- MODAL -->
-<div class="modal-bg" id="modal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Melding</div>
-      <button class="modal-close" onclick="closeModal()">ÃÂ</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-hint" id="modalHint">Ton ontvangt dit ter controle en beslist of het wordt aangepast of toegevoegd.</div>
-      <div class="modal-label" id="modalLabel">Jouw melding</div>
-      <textarea class="modal-textarea" id="modalText" rows="4" placeholder="Beschrijf hier..."></textarea>
-      <div class="modal-label">Betreffend antwoord</div>
-      <textarea class="modal-context" id="modalContext" rows="2" readonly></textarea>
-      <input type="hidden" id="modalType" value="fout">
-      <div class="modal-field" style="margin-top:12px;">
-        <div class="modal-label">Bijlage (optioneel) Ã¢ÂÂ screenshot of document</div>
-        <input type="file" id="modalBijlage" accept="image/*,.pdf,.docx,.xlsx" style="width:100%;border:2px solid var(--border);padding:8px;font-family:inherit;font-size:12px;cursor:pointer;margin-top:4px;">
-      </div>
-      <div style="margin-top:10px;">
-        <div class="modal-label">Bijlage (optioneel)</div>
-        <input type="file" id="modalBijlage" accept="image/*,.pdf,.docx,.xlsx,.xls,.csv,.txt" style="width:100%;border:2px solid var(--border);padding:8px 10px;font-size:12px;font-family:inherit;cursor:pointer;margin-top:4px;background:white;">
-      </div>
-      <div class="modal-footer">
-        <button class="btn-cancel" onclick="closeModal()">Annuleren</button>
-        <button class="btn-submit" id="modalSubmit" onclick="submitModal()">Versturen naar Ton Ã¢ÂÂ</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="page-footer">
-  <div class="pf-brand">MVA Academie ÃÂ· AI Assistent</div>
-  <div class="pf-info">Antwoorden gebaseerd op MVA Academie leerpad ÃÂ· Versie 2.0</div>
-</div>
-
-<script>
-// ââ SSO: Automatisch inloggen via portal ââ
-  (function() {
-    if (localStorage.getItem('mvaToken')) return;
-    var urlParams = new URLSearchParams(window.location.search);
-    var ssoParam = urlParams.get('sso');
-    if (!ssoParam) return;
-    try {
-      var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
-      if (!ssoData || !ssoData.access_token || !ssoData.email) return;
-      if (Date.now() - ssoData.ts > 3600000) return;
-      var emailLower = ssoData.email.toLowerCase();
-      var level = (emailLower === 'toncoffeng@makelaarsvan.nl' || emailLower === 'hanskoppes@makelaarsvan.nl') ? 'directie' : 'makelaar';
-      var naam = emailLower.split('@')[0];
-      var token = btoa(emailLower + ':' + level + ':' + Date.now());
-      localStorage.setItem('mvaToken', token);
-      localStorage.setItem('mvaLevel', level);
-      localStorage.setItem('mvaName', naam);
-      window._mvaToken = token;
-      window._mvaLevel = level;
-      window._mvaName = naam;
-      window.history.replaceState({}, '', window.location.pathname);
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('chatWrap').style.display = 'flex';
-      var badge = document.querySelector('.header-badge');
-      if (badge) badge.textContent = naam;
-      if (typeof updateDutyWidget === 'function') updateDutyWidget();
-    } catch(e) {}
-  })();history = [];
-let loading = false;
-
-function autoResize(el) {
-  el.style.height = 'auto';
-  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
-}
-
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-}
-
-function sendChip(el) {
-  document.getElementById('userInput').value = el.textContent;
-  send();
-}
-
-function scrollBottom() {
-  const wrap = document.getElementById('chatWrap');
-  wrap.scrollTop = wrap.scrollHeight;
-}
-
-function removeWelcome() {
-  const w = document.getElementById('welcome');
-  if (w) w.remove();
-  document.getElementById('clearBtn').style.display = 'block';
-}
-
-function formatContent(text) {
-  const lines = text.split('\n');
-  let html = '';
-  for (const line of lines) {
-    if (line.startsWith('### ')) {
-      html += `<div class="msg-h3">${esc(line.slice(4))}</div>`;
-    } else if (line.startsWith('## ')) {
-      html += `<div class="msg-h2">${esc(line.slice(3))}</div>`;
-    } else if (line.startsWith('# ')) {
-      html += `<div class="msg-h1">${esc(line.slice(2))}</div>`;
-    } else if (line.startsWith('- ') || line.startsWith('Ã¢ÂÂ¢ ')) {
-      html += `<div class="msg-li">Ã¢ÂÂ¢ ${esc(line.slice(2))}</div>`;
-    } else if (/^\d+\./.test(line)) {
-      html += `<div class="msg-li">${esc(line)}</div>`;
-    } else if (line.trim() === '') {
-      html += '<div class="msg-sep"></div>';
-    } else {
-      html += `<p>${esc(line)}</p>`;
-    }
-  }
-  // Bold
-  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  return html;
-}
-
-function esc(str) {
-  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function addMsg(role, text, sources = []) {
-  removeWelcome();
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-
-  const div = document.createElement('div');
-  div.className = `msg ${role}`;
-
-  const av = document.createElement('div');
-  av.className = 'msg-avatar';
-  av.textContent = role === 'assistant' ? 'MVA' : 'JIJ';
-
-  const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-
-  if (role === 'assistant') {
-    bubble.innerHTML = formatContent(text);
-    // Render sources if available
-    if (sources && sources.length > 0) {
-      const srcDiv = document.createElement('div');
-      srcDiv.className = 'sources';
-      const srcLabel = document.createElement('div');
-      srcLabel.className = 'source-label';
-      srcLabel.textContent = 'Bronnen';
-      srcDiv.appendChild(srcLabel);
-      sources.forEach(s => {
-        const a = document.createElement('a');
-        a.href = s.url;
-        a.target = '_blank';
-        a.className = 'source-link';
-        a.textContent = 'Ã¢ÂÂ ' + s.label;
-        srcDiv.appendChild(a);
-      });
-      bubble.appendChild(srcDiv);
-    }
-
-    const actions = document.createElement('div');
-    actions.className = 'msg-actions';
-
-    const btnFout = document.createElement('button');
-    btnFout.className = 'action-btn';
-    btnFout.textContent = 'Ã¢ÂÂ Fout melden';
-    btnFout.onclick = () => openModal('fout', text);
-
-    const btnOntbreekt = document.createElement('button');
-    btnOntbreekt.className = 'action-btn';
-    btnOntbreekt.textContent = '+ Ontbrekende info melden';
-    btnOntbreekt.onclick = () => openModal('ontbreekt', text);
-
-    actions.appendChild(btnFout);
-    actions.appendChild(btnOntbreekt);
-    bubble.appendChild(actions);
-  } else {
-    bubble.textContent = text;
-  }
-
-  div.appendChild(av);
-  div.appendChild(bubble);
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-}
-
-function showTyping() {
-  removeWelcome();
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-  const div = document.createElement('div');
-  div.className = 'msg assistant';
-  div.id = 'typing';
-
-  const av = document.createElement('div');
-  av.className = 'msg-avatar';
-  av.textContent = 'MVA';
-
-  const dots = document.createElement('div');
-  dots.className = 'typing-dots';
-  for (let i = 0; i < 3; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot';
-    dots.appendChild(d);
-  }
-
-  div.appendChild(av);
-  div.appendChild(dots);
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-}
-
-function removeTyping() {
-  const t = document.getElementById('typing');
-  if (t) t.remove();
-}
-
-function showError(msg) {
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-  const div = document.createElement('div');
-  div.className = 'error-bar';
-  div.textContent = msg;
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-  setTimeout(() => div.remove(), 6000);
-}
-
-async function send() {
-  const input = document.getElementById('userInput');
-  const text = input.value.trim();
-  if (!text || loading) return;
-
-  loading = true;
-  document.getElementById('sendBtn').disabled = true;
-  input.value = '';
-  input.style.height = 'auto';
-
-  addMsg('user', text);
-  history.push({ role: 'user', content: text });
-  showTyping();
-
-  try {
-    const res = await fetch('/.netlify/functions/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history, token: window._mvaToken || localStorage.getItem("mvaToken") })
-    });
-
-    removeTyping();
-
-    if (res.status === 401) {
-      localStorage.removeItem('mvaToken');
-      localStorage.removeItem('mvaLevel');
-      localStorage.removeItem('mvaName');
-      window._mvaToken = null;
-      removeTyping();
-      addMsg('assistant', 'Je sessie is verlopen. Log opnieuw in om verder te gaan.');
-      setTimeout(() => location.reload(), 2000);
-      return;
-    }
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || `Er ging iets mis. Probeer het opnieuw.`);
-    }
-
-    const data = await res.json();
-    const reply = data.reply || 'Geen antwoord ontvangen.';
-    const sources = data.sources || [];
-    addMsg('assistant', reply, sources);
-    
-    // Log to Jotform directly from browser
-    logToJotform('Vraag', text, reply, window._mvaName || '');
-    history.push({ role: 'assistant', content: reply });
-
-  } catch (err) {
-    removeTyping();
-    showError('Er ging iets mis. Probeer het opnieuw. (' + err.message + ')');
-    history.pop();
-  }
-
-  loading = false;
-  document.getElementById('sendBtn').disabled = false;
-  input.focus();
-}
-
-function clearChat() {
-  history = [];
-  const wrap = document.getElementById('chatWrap');
-  // Remove all messages except anchor
-  Array.from(wrap.children).forEach(c => {
-    if (c.id !== 'anchor') c.remove();
-  });
-  // Re-add welcome
-  const welcome = document.createElement('div');
-  welcome.className = 'welcome';
-  welcome.id = 'welcome';
-  welcome.innerHTML = `
-    <div class="welcome-title">Welkom bij de MVA <span style="color:var(--orange)">Academie</span> Assistent</div>
-    <div class="welcome-body">Stel een vraag over jouw onboarding, de werkwijze van MVA, systemen, Ninja Selling of financiÃÂ«le zaken.</div>
-    <div class="welcome-grid">
-      <div class="welcome-item"><div class="welcome-item-title">Fase 1 Ã¢ÂÂ Dag 1Ã¢ÂÂ30</div><div class="welcome-item-sub">Formaliteiten, systemen, eerste bezichtiging</div></div>
-      <div class="welcome-item"><div class="welcome-item-title">Ninja Selling</div><div class="welcome-item-sub">4 principes, Ninja Nine, FORD, ochtendritueel</div></div>
-      <div class="welcome-item"><div class="welcome-item-title">Workflows</div><div class="welcome-item-sub">Aankoop & verkoop stap voor stap</div></div>
-      <div class="welcome-item"><div class="welcome-item-title">Financieel</div><div class="welcome-item-sub">Snelstart, BTW, courtage, deadlines</div></div>
-    </div>`;
-  wrap.insertBefore(welcome, document.getElementById('anchor'));
-  document.getElementById('clearBtn').style.display = 'none';
-}
-
-// MODAL
-function openModal(type, context) {
-  const isFout = type === 'fout';
-  document.getElementById('modalTitle').textContent = isFout ? 'Ã¢ÂÂ Fout melden' : '+ Ontbrekende informatie melden';
-  document.getElementById('modalHint').textContent = isFout
-    ? 'Beschrijf wat er niet klopt. Ton ontvangt dit ter controle voordat het wordt aangepast.'
-    : 'Beschrijf welke informatie ontbreekt. Ton beslist of het wordt toegevoegd aan de kennisbasis.';
-  document.getElementById('modalLabel').textContent = isFout ? 'Wat klopt er niet?' : 'Welke informatie ontbreekt?';
-  document.getElementById('modalText').placeholder = isFout
-    ? 'Bijv: Het courtagepercentage voor Level 2 klopt niet, het moet 42% zijn...'
-    : 'Bijv: Er ontbreekt informatie over hoe je een bezwaar behandelt bij een bod...';
-  document.getElementById('modalContext').value = context.substring(0, 250) + (context.length > 250 ? '...' : '');
-  document.getElementById('modalType').value = type;
-  document.getElementById('modalText').value = '';
-  document.getElementById('modal').classList.add('open');
-  setTimeout(() => document.getElementById('modalText').focus(), 100);
-}
-
-function closeModal() {
-  document.getElementById('modal').classList.remove('open');
-}
-
-async function submitModal() {
-  const text = document.getElementById('modalText').value.trim();
-  if (!text) { document.getElementById('modalText').focus(); return; }
-  const type = document.getElementById('modalType').value;
-  const context = document.getElementById('modalContext').value;
-  const submitBtn = document.getElementById('modalSubmit');
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Versturen...';
-
-  const bijlageInput = document.getElementById('modalBijlage');
-  const bijlage = bijlageInput?.files?.[0];
-
-  try {
-    let res;
-    if (bijlage) {
-      const fd = new FormData();
-      fd.append('type', type);
-      fd.append('melding', text);
-      fd.append('antwoord', context.substring(0, 500));
-      fd.append('bijlage', bijlage, bijlage.name);
-      res = await fetch('/.netlify/functions/report', { method: 'POST', body: fd });
-    } else {
-      res = await fetch('/.netlify/functions/report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, melding: text, antwoord: context })
-      });
-    }
-
-    const data = await res.json();
-
-    if (res.ok && data.success) {
-      // Show thank you message inside modal instead of closing
-      document.querySelector('.modal-body').innerHTML = `
-        <div style="text-align:center;padding:32px 16px;">
-          <div style="font-size:36px;margin-bottom:12px;">Ã¢ÂÂ</div>
-          <div style="font-size:16px;font-weight:900;color:var(--navy);margin-bottom:8px;">Bedankt voor je melding!</div>
-          <div style="font-size:13px;color:var(--light);margin-bottom:24px;">Je melding is ontvangen. Deze wordt door Claude beoordeeld en als de wijziging correct is, stelt Claude een aanpassing voor aan Ton.</div>
-          <button class="btn-cancel" onclick="closeModal()" style="background:var(--navy);color:white;border:none;padding:10px 24px;font-weight:700;cursor:pointer;">Sluiten</button>
-        </div>`;
-    } else {
-      throw new Error(data.error || 'Onbekende fout');
-    }
-  } catch(err) {
-    submitBtn.textContent = 'Versturen naar Ton Ã¢ÂÂ';
-    submitBtn.disabled = false;
-    showConfirm('Melding kon niet worden verzonden. Neem direct contact op met Ton.');
-  }
-}
-
-function showConfirm(msg) {
-  const wrap = document.getElementById('chatWrap');
-  const anchor = document.getElementById('anchor');
-  const div = document.createElement('div');
-  div.style.cssText = 'background:#E8F5E9;border:1px solid #A5D6A7;border-left:3px solid #2E7D32;padding:10px 14px;font-size:12px;color:#1B5E20;';
-  div.textContent = 'Ã¢ÂÂ ' + msg;
-  wrap.insertBefore(div, anchor);
-  scrollBottom();
-  setTimeout(() => div.remove(), 5000);
-}
-
-// LEADDISTRIBUTIE SCHEMA
-const MAKELAARS = [
-  'Wilma Out', 'Anthonie Schilder', 'Mathias Elias', 'Maurits Rodermond',
-  'Rogier de Vries', 'Jan Jaap ten Arve', 'Maurits van Leeuwen', 'Pelle Freijsen', 'Jori Netiv'
-];
-const ANCHOR = new Date('2026-04-03T00:00:00+02:00'); // Vrijdag 3 april 2026 = dag 0
-const SLOTS = ['00:00Ã¢ÂÂ04:00', '04:00Ã¢ÂÂ08:00', '08:00Ã¢ÂÂ12:00', '12:00Ã¢ÂÂ16:00', '16:00Ã¢ÂÂ20:00', '20:00Ã¢ÂÂ00:00'];
-
-function getMakelaarForSlot(date, slotIndex) {
-  const msPerDay = 24 * 60 * 60 * 1000;
-  const daysSinceAnchor = Math.floor((date - ANCHOR) / msPerDay);
-  const totalSlot = daysSinceAnchor * 6 + slotIndex;
-  return MAKELAARS[((totalSlot % MAKELAARS.length) + MAKELAARS.length) % MAKELAARS.length];
-}
-
-function getCurrentSlotIndex(date) {
-  const hour = date.getHours();
-  return Math.floor(hour / 4);
-}
-
-function updateDutyWidget() {
-  const now = new Date();
-  const slotIndex = getCurrentSlotIndex(now);
-  const current = getMakelaarForSlot(now, slotIndex);
-  
-  // Next slot
-  const nextSlotIndex = (slotIndex + 1) % 6;
-  const nextDate = new Date(now);
-  if (nextSlotIndex === 0) nextDate.setDate(nextDate.getDate() + 1);
-  const next = getMakelaarForSlot(nextDate, nextSlotIndex);
-  
-  // Time until next slot
-  const nextHour = (slotIndex + 1) * 4;
-  const hoursLeft = nextHour <= 24 ? nextHour - now.getHours() : (24 - now.getHours());
-  const minsLeft = 60 - now.getMinutes();
-  
-  document.getElementById('dutyName').innerHTML = `Volgende lead Ã¢ÂÂ <span>${current}</span>`;
-  document.getElementById('dutySlot').textContent = `Tijdslot: ${SLOTS[slotIndex]}`;
-  document.getElementById('dutyNext').textContent = `Volgende: ${next} (${SLOTS[nextSlotIndex]})`;
-  document.getElementById('dutyGrid').style.display = 'grid';
-  
-  // Makelaar van Dienst (ma-vr 09:00-17:00)
-  const MAVD = {
-    1: ['Anthonie Schilder', 'Mathias Elias'],      // maandag
-    2: ['Pelle Freijsen', 'Jori Netiv'],             // dinsdag
-    3: ['Rogier de Vries', 'Koen Buser'],            // woensdag
-    4: ['Maurits van Leeuwen', 'Jan Jaap ten Arve'], // donderdag
-    5: ['Maurits Rodermond', 'Wilma Out'],            // vrijdag
-  };
-  const dayOfWeek = now.getDay(); // 0=zo, 1=ma, ..., 5=vr, 6=za
-  const hour = now.getHours();
-  
-  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
-    const pair = MAVD[dayOfWeek];
-    const isOchtend = hour < 13;
-    const mavdCurrent = isOchtend ? pair[0] : pair[1];
-    const mavdNext = isOchtend ? pair[1] : (MAVD[dayOfWeek < 5 ? dayOfWeek + 1 : 1]?.[0] || 'Ã¢ÂÂ');
-    const mavdSlotLabel = isOchtend ? '09:00Ã¢ÂÂ13:00' : '13:00Ã¢ÂÂ17:00';
-    const mavdNextLabel = isOchtend ? `${pair[1]} (13:00Ã¢ÂÂ17:00)` : (dayOfWeek < 5 ? `${MAVD[dayOfWeek+1][0]} (ma 09:00)` : `${MAVD[1][0]} (ma 09:00)`);
-    
-    document.getElementById('mavdName').innerHTML = `<span>${mavdCurrent}</span>`;
-    document.getElementById('mavdSlot').textContent = (hour >= 9 && hour < 17) ? `Dienst: ${mavdSlotLabel}` : 'Buiten diensttijden';
-    document.getElementById('mavdNext').textContent = `Volgende: ${mavdNextLabel}`;
-  } else {
-    document.getElementById('mavdName').innerHTML = `<span style="color:var(--light)">Weekend</span>`;
-    document.getElementById('mavdSlot').textContent = 'Geen dienst';
-    const nextMon = MAVD[1][0];
-    document.getElementById('mavdNext').textContent = `Maandag: ${nextMon} (09:00Ã¢ÂÂ13:00)`;
-  }
-}
-
-// JOTFORM LOGGING via Netlify function (uses server-side API key)
-function logToJotform(type, vraag, antwoord, naam) {
-  try {
-    fetch('/.netlify/functions/log', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        type: type,
-        vraag: (vraag || '').substring(0, 500),
-        antwoord: (antwoord || '').substring(0, 1000),
-        tijdstip: new Date().toLocaleString('nl-NL'),
-        naam: naam || ''
-      })
-    }).catch(() => {});
-  } catch(e) {}
-}
-
-// WACHTWOORD VERGETEN
-function toonWachtwoordVergeten() {
-  const form = document.getElementById('wwVergetenForm');
-  form.style.display = form.style.display === 'none' ? 'block' : 'none';
-  const email = document.getElementById('loginEmail')?.value;
-  if (email) document.getElementById('wwEmail').value = email;
-}
-
-async function vraagResetLink() {
-  const email = document.getElementById('wwEmail').value.trim();
-  const msgEl = document.getElementById('wwMsg');
-  if (!email) { msgEl.textContent = 'Vul je e-mailadres in.'; return; }
-  
-  msgEl.textContent = 'Bezig...';
-  try {
-    const res = await fetch('/.netlify/functions/wachtwoord', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ action: 'generateLink', email })
-    });
-    const data = await res.json();
-    if (data.error) {
-      msgEl.textContent = data.error;
-    } else if (data.emailSent) {
-      msgEl.style.color = '#16a34a';
-      msgEl.textContent = 'E-mail verstuurd! Controleer je inbox.';
-    } else {
-      msgEl.textContent = 'Neem contact op met Ton Coffeng Ã¢ÂÂ e-mail kon niet worden verstuurd.';
-    }
-  } catch(e) {
-    msgEl.textContent = 'Er ging iets mis. Probeer opnieuw.';
-  }
-}
-
-// LOGOUT
-
-function doLogout() {
-  localStorage.removeItem('mvaToken');
-  localStorage.removeItem('mvaLevel');
-  localStorage.removeItem('mvaName');
-  window._mvaToken = null;
-  location.reload();
-}
-
-// LOGIN - restore token from session on load
-(function() {
-  const saved = localStorage.getItem('mvaToken');
-  if (saved) {
-    window._mvaToken = saved;
-    window._mvaLevel = localStorage.getItem('mvaLevel');
-    window._mvaName = localStorage.getItem('mvaName');
-    const ls = document.getElementById('loginScreen');
-    if (ls) ls.style.display = 'none';
-    const badge = document.querySelector('.header-badge');
-    if (badge && window._mvaName) badge.textContent = window._mvaName;
-    updateDutyWidget();
-    setInterval(updateDutyWidget, 60000); // Update every minute
-    // Show admin link for directie
-    const adminLink = document.getElementById('adminLink');
-    if (adminLink && (window._mvaLevel === 'directie' || localStorage.getItem('mvaLevel') === 'directie')) {
-      adminLink.style.display = 'inline';
-    }
-  }
-})();
-
-function doLogin() {
-  const email = document.getElementById('loginEmail')?.value.trim() || '';
-  const pw = document.getElementById('loginPassword').value.trim();
-  if (!email || !pw) {
-    document.getElementById('loginError').textContent = 'Vul je e-mailadres en wachtwoord in.';
-    document.getElementById('loginError').style.display = 'block';
-    return;
-  }
-  document.getElementById('loginError').style.display = 'none';
-  const btn = document.querySelector('.login-btn');
-  btn.textContent = 'Bezig...'; btn.disabled = true;
-
-  fetch('/.netlify/functions/auth', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ action: 'login', email, password: pw })
-  }).then(r => r.json()).then(data => {
-    if (data.token) {
-      window._mvaToken = data.token;
-      window._mvaLevel = data.level;
-      window._mvaName = data.name;
-      localStorage.setItem('mvaToken', data.token);
-      localStorage.setItem('mvaLevel', data.level);
-      localStorage.setItem('mvaName', data.name || email);
-      document.getElementById('loginScreen').style.display = 'none';
-      const badge = document.querySelector('.header-badge');
-      if (badge) badge.textContent = data.name || email;
-      updateDutyWidget();
-      setInterval(updateDutyWidget, 60000);
-      // Show admin link for directie
-      const adminLink = document.getElementById('adminLink');
-      if (adminLink && data.level === 'directie') adminLink.style.display = 'inline';
-    } else {
-      document.getElementById('loginError').textContent = data.error || 'Inloggen mislukt.';
-      document.getElementById('loginError').style.display = 'block';
-    }
-  }).catch(() => {
-    document.getElementById('loginError').textContent = 'Verbindingsfout. Probeer opnieuw.';
-    document.getElementById('loginError').style.display = 'block';
-  }).finally(() => { btn.textContent = 'Inloggen Ã¢ÂÂ'; btn.disabled = false; });
-}
-</script>
-</body>
-</html>
-se;
   letter-spacing: .08em;
   white-space: nowrap;
 }
@@ -1826,7 +665,68 @@ se;
 </div>
 
 <script>
-let history = [];
+// ── SSO: Automatisch inloggen via portal ──
+  (function() {
+    if (localStorage.getItem('mvaToken')) return;
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var ssoParam = urlParams.get('sso');
+    if (ssoParam) {
+      try {
+        var ssoData = JSON.parse(atob(decodeURIComponent(ssoParam)));
+        if (ssoData && ssoData.access_token && ssoData.email && (Date.now() - ssoData.ts < 300000)) {
+          var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
+          var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
+          fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(ssoData.email) + '&select=naam,level,actief', {
+            headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + ssoData.access_token }
+          }).then(function(r) { return r.json(); }).then(function(data) {
+            var g = data && data[0];
+            if (!g || !g.actief) return;
+            var level = g.level === 'directie' ? 'directie' : 'makelaar';
+            var token = btoa(JSON.stringify({ email: ssoData.email.toLowerCase(), level: level, ts: Date.now() }));
+            localStorage.setItem('mvaToken', token);
+            localStorage.setItem('mvaLevel', level);
+            localStorage.setItem('mvaName', g.naam);
+            window.history.replaceState({}, '', window.location.pathname);
+            window._mvaToken = token;
+            window._mvaLevel = level;
+            window._mvaName = g.naam;
+            var ls = document.getElementById('loginScreen');
+            if (ls) ls.style.display = 'none';
+            var badge = document.querySelector('.header-badge');
+            if (badge) badge.textContent = g.naam;
+            updateDutyWidget();
+            var adminLink = document.getElementById('adminLink');
+            if (adminLink && level === 'directie') adminLink.style.display = 'inline';
+          }).catch(function() {});
+          return;
+        }
+      } catch(e) {}
+    }
+
+    try {
+      var sessieRaw = localStorage.getItem('sb-ehqtyhoeubchcwfavdzr-auth-token');
+      if (!sessieRaw) return;
+      var sessie = JSON.parse(sessieRaw);
+      if (!sessie || !sessie.access_token || !sessie.user) return;
+      var email = sessie.user.email;
+      if (!email) return;
+      var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
+      var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
+      fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(email) + '&select=naam,level,actief', {
+        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + sessie.access_token }
+      }).then(function(r) { return r.json(); }).then(function(data) {
+        var g = data && data[0];
+        if (!g || !g.actief) return;
+        var level = g.level === 'directie' ? 'directie' : 'makelaar';
+        var token = btoa(JSON.stringify({ email: email.toLowerCase(), level: level, ts: Date.now() }));
+        localStorage.setItem('mvaToken', token);
+        localStorage.setItem('mvaLevel', level);
+        localStorage.setItem('mvaName', g.naam);
+        window.location.reload();
+      }).catch(function() {});
+    } catch(e) {}
+  })();let history = [];
 let loading = false;
 
 function autoResize(el) {
@@ -2346,6 +1246,1140 @@ function doLogin() {
     document.getElementById('loginError').textContent = 'Verbindingsfout. Probeer opnieuw.';
     document.getElementById('loginError').style.display = 'block';
   }).finally(() => { btn.textContent = 'Inloggen â'; btn.disabled = false; });
+}
+</script>
+</body>
+</html>
+se;
+  letter-spacing: .08em;
+  white-space: nowrap;
+}
+
+/* LAYOUT */
+.body-wrap {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* CHIPS */
+.chips-wrap {
+  padding: 16px 0 12px;
+  flex-shrink: 0;
+}
+.chips-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 8px;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  padding: 5px 12px;
+  background: white;
+  border: 1.5px solid var(--border);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mid);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: inherit;
+  line-height: 1.4;
+}
+.chip:hover { border-color: var(--orange); color: var(--orange); background: #FFF5F0; }
+
+/* CHAT */
+.chat-wrap {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 8px 0 16px;
+}
+.chat-wrap::-webkit-scrollbar { width: 4px; }
+.chat-wrap::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+/* WELCOME */
+.welcome {
+  background: white;
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--orange);
+  padding: 22px 26px;
+}
+.welcome-title { font-size: 16px; font-weight: 900; color: var(--navy); margin-bottom: 8px; }
+.welcome-title span { color: var(--orange); }
+.welcome-body { font-size: 13px; color: var(--mid); line-height: 1.65; margin-bottom: 14px; }
+.welcome-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.welcome-item { background: var(--bg); border: 1px solid var(--border); padding: 9px 12px; }
+.welcome-item-title { font-size: 10px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+.welcome-item-sub { font-size: 11px; color: var(--light); }
+
+/* MESSAGES */
+.msg {
+  display: flex;
+  gap: 10px;
+  animation: fadeUp .2s ease;
+}
+.msg.user { flex-direction: row-reverse; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+.msg.assistant .msg-avatar { background: var(--navy); color: var(--orange); }
+.msg.user .msg-avatar { background: var(--orange); color: white; }
+
+.msg-bubble {
+  max-width: 80%;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.msg.assistant .msg-bubble {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--navy);
+  color: var(--dark);
+}
+.msg.user .msg-bubble {
+  background: var(--navy);
+  color: white;
+}
+
+/* Formatted content inside bubbles */
+.msg-bubble p { margin: 0 0 6px; }
+.msg-bubble p:last-of-type { margin-bottom: 0; }
+.msg-bubble .msg-h1 { font-size: 15px; font-weight: 900; color: var(--navy); margin: 14px 0 6px; }
+.msg-bubble .msg-h2 { font-size: 13px; font-weight: 900; color: var(--navy); margin: 12px 0 4px; }
+.msg-bubble .msg-h3 { font-size: 11px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: .06em; margin: 10px 0 4px; }
+.msg-bubble .msg-li { padding: 2px 0 2px 10px; border-left: 2px solid #E8E8E8; margin: 2px 0; }
+.msg-bubble .msg-sep { height: 6px; }
+.msg-bubble strong { color: var(--orange); font-weight: 700; }
+
+/* Action buttons */
+.msg-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.action-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--light);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+}
+.action-btn:hover { color: var(--orange); border-color: var(--orange); background: #FFF5F0; }
+
+/* Typing */
+.typing-dots {
+  display: flex;
+  gap: 5px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--navy);
+  align-items: center;
+}
+.dot {
+  width: 7px;
+  height: 7px;
+  background: var(--navy);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.dot:nth-child(2) { animation-delay: .2s; }
+.dot:nth-child(3) { animation-delay: .4s; }
+@keyframes bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: .35; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ERROR */
+.error-bar {
+  background: #FFF3E0;
+  border: 1px solid #FFB74D;
+  border-left: 3px solid var(--orange);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #7B3A00;
+}
+
+/* INPUT */
+.input-wrap {
+  flex-shrink: 0;
+  padding: 0 0 16px;
+}
+.input-box {
+  display: flex;
+  background: white;
+  border: 2px solid var(--border);
+  transition: border-color .15s;
+}
+.input-box:focus-within { border-color: var(--navy); }
+#userInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 12px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  background: transparent;
+  color: var(--dark);
+  line-height: 1.5;
+  max-height: 100px;
+  overflow-y: auto;
+}
+#userInput::placeholder { color: #bbb; }
+.send-btn {
+  width: 46px;
+  height: 46px;
+  background: var(--navy);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-end;
+  transition: background .15s;
+  flex-shrink: 0;
+}
+.send-btn:hover:not(:disabled) { background: var(--orange); }
+.send-btn:disabled { background: var(--border); cursor: not-allowed; }
+.send-btn svg { fill: white; width: 17px; height: 17px; }
+.input-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  padding: 0 2px;
+}
+.input-hint { font-size: 11px; color: #bbb; }
+.clear-btn {
+  font-size: 11px;
+  color: #bbb;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-decoration: underline;
+}
+.clear-btn:hover { color: var(--orange); }
+
+/* MODAL */
+.modal-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-bg.open { display: flex; }
+.modal {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  border-top: 4px solid var(--orange);
+}
+.modal-header {
+  background: var(--navy);
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-title { font-size: 13px; font-weight: 900; color: white; }
+.modal-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.6);
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+}
+.modal-body { padding: 18px 20px; }
+.modal-hint { font-size: 12px; color: var(--light); margin-bottom: 14px; line-height: 1.5; }
+.modal-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-bottom: 5px; }
+.modal-textarea {
+  width: 100%;
+  border: 2px solid var(--border);
+  padding: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+.modal-textarea:focus { outline: none; border-color: var(--navy); }
+.modal-context {
+  width: 100%;
+  border: 1px solid #EBEBEB;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-family: inherit;
+  color: #aaa;
+  background: var(--bg);
+  resize: none;
+  margin-bottom: 16px;
+}
+.modal-footer { display: flex; gap: 8px; justify-content: flex-end; }
+.btn-cancel {
+  padding: 9px 16px;
+  background: none;
+  border: 1px solid var(--border);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--mid);
+}
+.btn-submit {
+  padding: 9px 18px;
+  background: var(--navy);
+  color: white;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s;
+}
+.btn-submit:hover { background: var(--orange); }
+
+/* FOOTER */
+.page-footer {
+  background: var(--navy);
+  border-top: 3px solid var(--orange);
+  padding: 10px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+.pf-brand { font-size: 9px; font-weight: 900; color: var(--orange); text-transform: uppercase; letter-spacing: .08em; }
+.pf-info { font-size: 9px; color: rgba(255,255,255,.3); }
+
+@media (max-width: 600px) {
+  .header { padding: 12px 16px; }
+  .header-badge { display: none; }
+  .body-wrap { padding: 0 12px; }
+  .welcome-grid { grid-template-columns: 1fr; }
+  .page-footer { padding: 10px 16px; }
+}
+
+/* LOGIN */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--navy);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  flex-direction: column;
+  gap: 0;
+}
+.login-box {
+  background: white;
+  width: 100%;
+  max-width: 400px;
+  border-top: 4px solid var(--orange);
+  padding: 36px 32px;
+}
+.login-logo { margin-bottom: 24px; }
+.login-logo-top { font-size: 11px; font-weight: 900; color: var(--orange); text-transform: uppercase; letter-spacing: .1em; }
+.login-logo-bot { font-size: 11px; font-weight: 900; color: var(--navy); text-transform: uppercase; letter-spacing: .1em; }
+.login-title { font-size: 20px; font-weight: 900; color: var(--navy); margin-bottom: 6px; }
+.login-title span { color: var(--orange); }
+.login-sub { font-size: 13px; color: var(--light); margin-bottom: 24px; }
+.login-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-bottom: 6px; }
+.login-input {
+  width: 100%;
+  border: 2px solid var(--border);
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  margin-bottom: 16px;
+  color: var(--dark);
+}
+.login-input:focus { outline: none; border-color: var(--navy); }
+.login-btn {
+  width: 100%;
+  background: var(--navy);
+  color: white;
+  border: none;
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background .15s;
+}
+.login-btn:hover { background: var(--orange); }
+
+.duty-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-bottom: 8px; }
+.duty-name { font-size: 18px; font-weight: 900; color: var(--navy); }
+.duty-name span { color: var(--orange); }
+.duty-slot { font-size: 12px; color: var(--light); margin-top: 2px; }
+.duty-next { font-size: 11px; color: var(--light); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.duty-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 0 auto 20px;
+  max-width: 700px;
+}
+.duty-widget {
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--orange);
+  background: white;
+  padding: 14px 18px;
+}
+.duty-widget.lead { border-top-color: var(--navy); }
+.sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: none;
+  background: #F0F3FA;
+  border: 1px solid #D0D8EE;
+  padding: 4px 10px;
+  letter-spacing: .04em;
+  transition: all .15s;
+}
+.source-link:hover { background: var(--navy); color: white; }
+.source-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--light); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.login-error {
+  background: #FFF3E0;
+  border: 1px solid #FFB74D;
+  border-left: 3px solid var(--orange);
+  padding: 10px 14px;
+  font-size: 12px;
+  color: #7B3A00;
+  margin-bottom: 16px;
+  display: none;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Netlify form (hidden) -->
+<form name="mva-melding" netlify netlify-honeypot="bot-field" hidden>
+  <input type="hidden" name="form-name" value="mva-melding">
+  <input name="bot-field">
+  <input name="type">
+  <textarea name="melding"></textarea>
+  <textarea name="antwoord"></textarea>
+</form>
+
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="login-logo-top">MAKELAARSVAN.</div>
+      <div class="login-logo-bot">AMSTERDAM</div>
+    </div>
+    <div class="login-title">MVA <span>Academie</span></div>
+    <div class="login-sub">Vraag & Antwoord Assistent — log in om verder te gaan</div>
+    <div class="login-error" id="loginError">Ongeldig wachtwoord. Probeer opnieuw.</div>
+    <div class="login-label">E-mailadres</div>
+    <input type="email" class="login-input" id="loginEmail" placeholder="jouw@makelaarsvan.nl" onkeydown="if(event.key==='Enter') document.getElementById('loginPassword').focus()">
+    <div class="login-label">Wachtwoord</div>
+    <input type="password" class="login-input" id="loginPassword" placeholder="Jouw wachtwoord" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="login-btn" onclick="doLogin()">Inloggen →</button>
+      <div style="text-align:center;margin-top:12px">
+        <a href="#" style="font-size:12px;color:#888;text-decoration:none" onclick="toonWachtwoordVergeten();return false;">
+          Wachtwoord vergeten?
+        </a>
+        <div id="wwVergetenForm" style="display:none;margin-top:12px;text-align:left">
+          <input class="login-input" id="wwEmail" type="email" placeholder="Jouw e-mailadres" style="margin-bottom:8px">
+          <button class="login-btn" onclick="vraagResetLink()" style="font-size:13px;padding:10px">Stuur reset link →</button>
+          <div id="wwMsg" style="font-size:12px;color:#888;margin-top:8px;text-align:center"></div>
+        </div>
+      </div>
+    <div style="font-size:11px;color:#bbb;text-align:center;margin-top:12px;">Geen toegang? Neem contact op met Ton Coffeng</div>
+  </div>
+</div>
+
+
+<!-- DUTY WIDGETS - shown after login -->
+<div class="duty-grid" id="dutyGrid" style="display:none">
+  <div class="duty-widget lead">
+    <div class="duty-label">📋 Leaddistributie — Aan de beurt</div>
+    <div class="duty-name" id="dutyName">—</div>
+    <div class="duty-slot" id="dutySlot">—</div>
+    <div class="duty-next" id="dutyNext">—</div>
+  </div>
+  <div class="duty-widget">
+    <div class="duty-label">🏠 Makelaar van Dienst</div>
+    <div class="duty-name" id="mavdName">—</div>
+    <div class="duty-slot" id="mavdSlot">—</div>
+    <div class="duty-next" id="mavdNext">—</div>
+  </div>
+</div>
+
+<div class="header">
+  <div class="logo-wrap">
+    <div class="logo-top">MAKELAARSVAN.</div>
+    <div class="logo-bot">AMSTERDAM</div>
+  </div>
+  <div class="header-div"></div>
+  <div class="header-text">
+    <div class="header-title">MVA <span>Academie</span> — Vraag & Antwoord</div>
+    <div class="header-sub">Stel een vraag over onboarding, workflows, systemen of Ninja Selling</div>
+  </div>
+  <div class="header-badge">AI Assistent</div>
+  <a id="adminLink" href="/admin.html" style="display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:5px 12px;font-size:10px;font-weight:700;font-family:inherit;text-transform:uppercase;letter-spacing:.06em;margin-left:8px;text-decoration:none;transition:all .15s;" onmouseover="this.style.background='rgba(232,80,10,.3)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">⚙ Beheer</a>
+  <button onclick="doLogout()" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);padding:5px 12px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;text-transform:uppercase;letter-spacing:.06em;margin-left:8px;transition:all .15s;" onmouseover="this.style.background='rgba(232,80,10,.3)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">Uitloggen</button>
+</div>
+
+<div class="body-wrap">
+
+  <div class="chips-wrap">
+    <div class="chips-label">Veelgestelde vragen</div>
+    <div class="chips" id="chips">
+      <button class="chip" onclick="sendChip(this)">Hoe werkt de WWFT-check?</button>
+      <button class="chip" onclick="sendChip(this)">Wat is de Ninja Nine?</button>
+      <button class="chip" onclick="sendChip(this)">Wanneer stuur ik een conceptfactuur?</button>
+      <button class="chip" onclick="sendChip(this)">Hoe stel ik een OTD op?</button>
+      <button class="chip" onclick="sendChip(this)">Wat is mijn courtage in Level 1?</button>
+      <button class="chip" onclick="sendChip(this)">Wat doet WPTC?</button>
+      <button class="chip" onclick="sendChip(this)">Hoe werkt floortime?</button>
+      <button class="chip" onclick="sendChip(this)">Wie zijn mijn mentoren?</button>
+    </div>
+  </div>
+
+  <div class="chat-wrap" id="chatWrap">
+    <div class="welcome" id="welcome">
+      <div class="welcome-title">Welkom bij de MVA <span>Academie</span> Assistent</div>
+      <div class="welcome-body">Stel een vraag over jouw onboarding, de werkwijze van MVA, systemen, Ninja Selling of financiële zaken. De assistent antwoordt op basis van het MVA Academie leerpad.</div>
+      <div class="welcome-grid">
+        <div class="welcome-item"><div class="welcome-item-title">Fase 1 — Dag 1–30</div><div class="welcome-item-sub">Formaliteiten, systemen, eerste bezichtiging</div></div>
+        <div class="welcome-item"><div class="welcome-item-title">Ninja Selling</div><div class="welcome-item-sub">4 principes, Ninja Nine, FORD, ochtendritueel</div></div>
+        <div class="welcome-item"><div class="welcome-item-title">Workflows</div><div class="welcome-item-sub">Aankoop & verkoop stap voor stap in Effytool</div></div>
+        <div class="welcome-item"><div class="welcome-item-title">Financieel</div><div class="welcome-item-sub">Snelstart, BTW, courtage, deadlines</div></div>
+        <div class="welcome-item"><div class="welcome-item-title">Systemen & Leveranciers</div><div class="welcome-item-sub">WPTC, Realworks, Effytool, Yisual, Homeshow</div></div>
+        <div class="welcome-item"><div class="welcome-item-title">Team MVA</div><div class="welcome-item-sub">Alle 12 makelaars, mentoren, directie</div></div>
+      </div>
+    </div>
+    <div id="anchor"></div>
+  </div>
+
+  <div class="input-wrap">
+    <div class="input-box">
+      <textarea id="userInput" rows="1"
+        placeholder="Stel een vraag aan de MVA Academie…"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="send()" title="Versturen">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+    <div class="input-footer">
+      <span class="input-hint">Enter = versturen &middot; Shift+Enter = nieuwe regel</span>
+      <button class="clear-btn" id="clearBtn" style="display:none" onclick="clearChat()">Gesprek wissen</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Melding</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-hint" id="modalHint">Ton ontvangt dit ter controle en beslist of het wordt aangepast of toegevoegd.</div>
+      <div class="modal-label" id="modalLabel">Jouw melding</div>
+      <textarea class="modal-textarea" id="modalText" rows="4" placeholder="Beschrijf hier..."></textarea>
+      <div class="modal-label">Betreffend antwoord</div>
+      <textarea class="modal-context" id="modalContext" rows="2" readonly></textarea>
+      <input type="hidden" id="modalType" value="fout">
+      <div class="modal-field" style="margin-top:12px;">
+        <div class="modal-label">Bijlage (optioneel) — screenshot of document</div>
+        <input type="file" id="modalBijlage" accept="image/*,.pdf,.docx,.xlsx" style="width:100%;border:2px solid var(--border);padding:8px;font-family:inherit;font-size:12px;cursor:pointer;margin-top:4px;">
+      </div>
+      <div style="margin-top:10px;">
+        <div class="modal-label">Bijlage (optioneel)</div>
+        <input type="file" id="modalBijlage" accept="image/*,.pdf,.docx,.xlsx,.xls,.csv,.txt" style="width:100%;border:2px solid var(--border);padding:8px 10px;font-size:12px;font-family:inherit;cursor:pointer;margin-top:4px;background:white;">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeModal()">Annuleren</button>
+        <button class="btn-submit" id="modalSubmit" onclick="submitModal()">Versturen naar Ton →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-footer">
+  <div class="pf-brand">MVA Academie · AI Assistent</div>
+  <div class="pf-info">Antwoorden gebaseerd op MVA Academie leerpad · Versie 2.0</div>
+</div>
+
+<script>
+let history = [];
+let loading = false;
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+}
+
+function sendChip(el) {
+  document.getElementById('userInput').value = el.textContent;
+  send();
+}
+
+function scrollBottom() {
+  const wrap = document.getElementById('chatWrap');
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function removeWelcome() {
+  const w = document.getElementById('welcome');
+  if (w) w.remove();
+  document.getElementById('clearBtn').style.display = 'block';
+}
+
+function formatContent(text) {
+  const lines = text.split('\n');
+  let html = '';
+  for (const line of lines) {
+    if (line.startsWith('### ')) {
+      html += `<div class="msg-h3">${esc(line.slice(4))}</div>`;
+    } else if (line.startsWith('## ')) {
+      html += `<div class="msg-h2">${esc(line.slice(3))}</div>`;
+    } else if (line.startsWith('# ')) {
+      html += `<div class="msg-h1">${esc(line.slice(2))}</div>`;
+    } else if (line.startsWith('- ') || line.startsWith('• ')) {
+      html += `<div class="msg-li">• ${esc(line.slice(2))}</div>`;
+    } else if (/^\d+\./.test(line)) {
+      html += `<div class="msg-li">${esc(line)}</div>`;
+    } else if (line.trim() === '') {
+      html += '<div class="msg-sep"></div>';
+    } else {
+      html += `<p>${esc(line)}</p>`;
+    }
+  }
+  // Bold
+  html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  return html;
+}
+
+function esc(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function addMsg(role, text, sources = []) {
+  removeWelcome();
+  const wrap = document.getElementById('chatWrap');
+  const anchor = document.getElementById('anchor');
+
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+
+  const av = document.createElement('div');
+  av.className = 'msg-avatar';
+  av.textContent = role === 'assistant' ? 'MVA' : 'JIJ';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  if (role === 'assistant') {
+    bubble.innerHTML = formatContent(text);
+    // Render sources if available
+    if (sources && sources.length > 0) {
+      const srcDiv = document.createElement('div');
+      srcDiv.className = 'sources';
+      const srcLabel = document.createElement('div');
+      srcLabel.className = 'source-label';
+      srcLabel.textContent = 'Bronnen';
+      srcDiv.appendChild(srcLabel);
+      sources.forEach(s => {
+        const a = document.createElement('a');
+        a.href = s.url;
+        a.target = '_blank';
+        a.className = 'source-link';
+        a.textContent = '↗ ' + s.label;
+        srcDiv.appendChild(a);
+      });
+      bubble.appendChild(srcDiv);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'msg-actions';
+
+    const btnFout = document.createElement('button');
+    btnFout.className = 'action-btn';
+    btnFout.textContent = '⚑ Fout melden';
+    btnFout.onclick = () => openModal('fout', text);
+
+    const btnOntbreekt = document.createElement('button');
+    btnOntbreekt.className = 'action-btn';
+    btnOntbreekt.textContent = '+ Ontbrekende info melden';
+    btnOntbreekt.onclick = () => openModal('ontbreekt', text);
+
+    actions.appendChild(btnFout);
+    actions.appendChild(btnOntbreekt);
+    bubble.appendChild(actions);
+  } else {
+    bubble.textContent = text;
+  }
+
+  div.appendChild(av);
+  div.appendChild(bubble);
+  wrap.insertBefore(div, anchor);
+  scrollBottom();
+}
+
+function showTyping() {
+  removeWelcome();
+  const wrap = document.getElementById('chatWrap');
+  const anchor = document.getElementById('anchor');
+  const div = document.createElement('div');
+  div.className = 'msg assistant';
+  div.id = 'typing';
+
+  const av = document.createElement('div');
+  av.className = 'msg-avatar';
+  av.textContent = 'MVA';
+
+  const dots = document.createElement('div');
+  dots.className = 'typing-dots';
+  for (let i = 0; i < 3; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    dots.appendChild(d);
+  }
+
+  div.appendChild(av);
+  div.appendChild(dots);
+  wrap.insertBefore(div, anchor);
+  scrollBottom();
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function showError(msg) {
+  const wrap = document.getElementById('chatWrap');
+  const anchor = document.getElementById('anchor');
+  const div = document.createElement('div');
+  div.className = 'error-bar';
+  div.textContent = msg;
+  wrap.insertBefore(div, anchor);
+  scrollBottom();
+  setTimeout(() => div.remove(), 6000);
+}
+
+async function send() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text || loading) return;
+
+  loading = true;
+  document.getElementById('sendBtn').disabled = true;
+  input.value = '';
+  input.style.height = 'auto';
+
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+  showTyping();
+
+  try {
+    const res = await fetch('/.netlify/functions/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history, token: window._mvaToken || localStorage.getItem("mvaToken") })
+    });
+
+    removeTyping();
+
+    if (res.status === 401) {
+      localStorage.removeItem('mvaToken');
+      localStorage.removeItem('mvaLevel');
+      localStorage.removeItem('mvaName');
+      window._mvaToken = null;
+      removeTyping();
+      addMsg('assistant', 'Je sessie is verlopen. Log opnieuw in om verder te gaan.');
+      setTimeout(() => location.reload(), 2000);
+      return;
+    }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Er ging iets mis. Probeer het opnieuw.`);
+    }
+
+    const data = await res.json();
+    const reply = data.reply || 'Geen antwoord ontvangen.';
+    const sources = data.sources || [];
+    addMsg('assistant', reply, sources);
+    
+    // Log to Jotform directly from browser
+    logToJotform('Vraag', text, reply, window._mvaName || '');
+    history.push({ role: 'assistant', content: reply });
+
+  } catch (err) {
+    removeTyping();
+    showError('Er ging iets mis. Probeer het opnieuw. (' + err.message + ')');
+    history.pop();
+  }
+
+  loading = false;
+  document.getElementById('sendBtn').disabled = false;
+  input.focus();
+}
+
+function clearChat() {
+  history = [];
+  const wrap = document.getElementById('chatWrap');
+  // Remove all messages except anchor
+  Array.from(wrap.children).forEach(c => {
+    if (c.id !== 'anchor') c.remove();
+  });
+  // Re-add welcome
+  const welcome = document.createElement('div');
+  welcome.className = 'welcome';
+  welcome.id = 'welcome';
+  welcome.innerHTML = `
+    <div class="welcome-title">Welkom bij de MVA <span style="color:var(--orange)">Academie</span> Assistent</div>
+    <div class="welcome-body">Stel een vraag over jouw onboarding, de werkwijze van MVA, systemen, Ninja Selling of financiële zaken.</div>
+    <div class="welcome-grid">
+      <div class="welcome-item"><div class="welcome-item-title">Fase 1 — Dag 1–30</div><div class="welcome-item-sub">Formaliteiten, systemen, eerste bezichtiging</div></div>
+      <div class="welcome-item"><div class="welcome-item-title">Ninja Selling</div><div class="welcome-item-sub">4 principes, Ninja Nine, FORD, ochtendritueel</div></div>
+      <div class="welcome-item"><div class="welcome-item-title">Workflows</div><div class="welcome-item-sub">Aankoop & verkoop stap voor stap</div></div>
+      <div class="welcome-item"><div class="welcome-item-title">Financieel</div><div class="welcome-item-sub">Snelstart, BTW, courtage, deadlines</div></div>
+    </div>`;
+  wrap.insertBefore(welcome, document.getElementById('anchor'));
+  document.getElementById('clearBtn').style.display = 'none';
+}
+
+// MODAL
+function openModal(type, context) {
+  const isFout = type === 'fout';
+  document.getElementById('modalTitle').textContent = isFout ? '⚑ Fout melden' : '+ Ontbrekende informatie melden';
+  document.getElementById('modalHint').textContent = isFout
+    ? 'Beschrijf wat er niet klopt. Ton ontvangt dit ter controle voordat het wordt aangepast.'
+    : 'Beschrijf welke informatie ontbreekt. Ton beslist of het wordt toegevoegd aan de kennisbasis.';
+  document.getElementById('modalLabel').textContent = isFout ? 'Wat klopt er niet?' : 'Welke informatie ontbreekt?';
+  document.getElementById('modalText').placeholder = isFout
+    ? 'Bijv: Het courtagepercentage voor Level 2 klopt niet, het moet 42% zijn...'
+    : 'Bijv: Er ontbreekt informatie over hoe je een bezwaar behandelt bij een bod...';
+  document.getElementById('modalContext').value = context.substring(0, 250) + (context.length > 250 ? '...' : '');
+  document.getElementById('modalType').value = type;
+  document.getElementById('modalText').value = '';
+  document.getElementById('modal').classList.add('open');
+  setTimeout(() => document.getElementById('modalText').focus(), 100);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+async function submitModal() {
+  const text = document.getElementById('modalText').value.trim();
+  if (!text) { document.getElementById('modalText').focus(); return; }
+  const type = document.getElementById('modalType').value;
+  const context = document.getElementById('modalContext').value;
+  const submitBtn = document.getElementById('modalSubmit');
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Versturen...';
+
+  const bijlageInput = document.getElementById('modalBijlage');
+  const bijlage = bijlageInput?.files?.[0];
+
+  try {
+    let res;
+    if (bijlage) {
+      const fd = new FormData();
+      fd.append('type', type);
+      fd.append('melding', text);
+      fd.append('antwoord', context.substring(0, 500));
+      fd.append('bijlage', bijlage, bijlage.name);
+      res = await fetch('/.netlify/functions/report', { method: 'POST', body: fd });
+    } else {
+      res = await fetch('/.netlify/functions/report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, melding: text, antwoord: context })
+      });
+    }
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      // Show thank you message inside modal instead of closing
+      document.querySelector('.modal-body').innerHTML = `
+        <div style="text-align:center;padding:32px 16px;">
+          <div style="font-size:36px;margin-bottom:12px;">✓</div>
+          <div style="font-size:16px;font-weight:900;color:var(--navy);margin-bottom:8px;">Bedankt voor je melding!</div>
+          <div style="font-size:13px;color:var(--light);margin-bottom:24px;">Je melding is ontvangen. Deze wordt door Claude beoordeeld en als de wijziging correct is, stelt Claude een aanpassing voor aan Ton.</div>
+          <button class="btn-cancel" onclick="closeModal()" style="background:var(--navy);color:white;border:none;padding:10px 24px;font-weight:700;cursor:pointer;">Sluiten</button>
+        </div>`;
+    } else {
+      throw new Error(data.error || 'Onbekende fout');
+    }
+  } catch(err) {
+    submitBtn.textContent = 'Versturen naar Ton →';
+    submitBtn.disabled = false;
+    showConfirm('Melding kon niet worden verzonden. Neem direct contact op met Ton.');
+  }
+}
+
+function showConfirm(msg) {
+  const wrap = document.getElementById('chatWrap');
+  const anchor = document.getElementById('anchor');
+  const div = document.createElement('div');
+  div.style.cssText = 'background:#E8F5E9;border:1px solid #A5D6A7;border-left:3px solid #2E7D32;padding:10px 14px;font-size:12px;color:#1B5E20;';
+  div.textContent = '✓ ' + msg;
+  wrap.insertBefore(div, anchor);
+  scrollBottom();
+  setTimeout(() => div.remove(), 5000);
+}
+
+// LEADDISTRIBUTIE SCHEMA
+const MAKELAARS = [
+  'Wilma Out', 'Anthonie Schilder', 'Mathias Elias', 'Maurits Rodermond',
+  'Rogier de Vries', 'Jan Jaap ten Arve', 'Maurits van Leeuwen', 'Pelle Freijsen', 'Jori Netiv'
+];
+const ANCHOR = new Date('2026-04-03T00:00:00+02:00'); // Vrijdag 3 april 2026 = dag 0
+const SLOTS = ['00:00–04:00', '04:00–08:00', '08:00–12:00', '12:00–16:00', '16:00–20:00', '20:00–00:00'];
+
+function getMakelaarForSlot(date, slotIndex) {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const daysSinceAnchor = Math.floor((date - ANCHOR) / msPerDay);
+  const totalSlot = daysSinceAnchor * 6 + slotIndex;
+  return MAKELAARS[((totalSlot % MAKELAARS.length) + MAKELAARS.length) % MAKELAARS.length];
+}
+
+function getCurrentSlotIndex(date) {
+  const hour = date.getHours();
+  return Math.floor(hour / 4);
+}
+
+function updateDutyWidget() {
+  const now = new Date();
+  const slotIndex = getCurrentSlotIndex(now);
+  const current = getMakelaarForSlot(now, slotIndex);
+  
+  // Next slot
+  const nextSlotIndex = (slotIndex + 1) % 6;
+  const nextDate = new Date(now);
+  if (nextSlotIndex === 0) nextDate.setDate(nextDate.getDate() + 1);
+  const next = getMakelaarForSlot(nextDate, nextSlotIndex);
+  
+  // Time until next slot
+  const nextHour = (slotIndex + 1) * 4;
+  const hoursLeft = nextHour <= 24 ? nextHour - now.getHours() : (24 - now.getHours());
+  const minsLeft = 60 - now.getMinutes();
+  
+  document.getElementById('dutyName').innerHTML = `Volgende lead → <span>${current}</span>`;
+  document.getElementById('dutySlot').textContent = `Tijdslot: ${SLOTS[slotIndex]}`;
+  document.getElementById('dutyNext').textContent = `Volgende: ${next} (${SLOTS[nextSlotIndex]})`;
+  document.getElementById('dutyGrid').style.display = 'grid';
+  
+  // Makelaar van Dienst (ma-vr 09:00-17:00)
+  const MAVD = {
+    1: ['Anthonie Schilder', 'Mathias Elias'],      // maandag
+    2: ['Pelle Freijsen', 'Jori Netiv'],             // dinsdag
+    3: ['Rogier de Vries', 'Koen Buser'],            // woensdag
+    4: ['Maurits van Leeuwen', 'Jan Jaap ten Arve'], // donderdag
+    5: ['Maurits Rodermond', 'Wilma Out'],            // vrijdag
+  };
+  const dayOfWeek = now.getDay(); // 0=zo, 1=ma, ..., 5=vr, 6=za
+  const hour = now.getHours();
+  
+  if (dayOfWeek >= 1 && dayOfWeek <= 5) {
+    const pair = MAVD[dayOfWeek];
+    const isOchtend = hour < 13;
+    const mavdCurrent = isOchtend ? pair[0] : pair[1];
+    const mavdNext = isOchtend ? pair[1] : (MAVD[dayOfWeek < 5 ? dayOfWeek + 1 : 1]?.[0] || '—');
+    const mavdSlotLabel = isOchtend ? '09:00–13:00' : '13:00–17:00';
+    const mavdNextLabel = isOchtend ? `${pair[1]} (13:00–17:00)` : (dayOfWeek < 5 ? `${MAVD[dayOfWeek+1][0]} (ma 09:00)` : `${MAVD[1][0]} (ma 09:00)`);
+    
+    document.getElementById('mavdName').innerHTML = `<span>${mavdCurrent}</span>`;
+    document.getElementById('mavdSlot').textContent = (hour >= 9 && hour < 17) ? `Dienst: ${mavdSlotLabel}` : 'Buiten diensttijden';
+    document.getElementById('mavdNext').textContent = `Volgende: ${mavdNextLabel}`;
+  } else {
+    document.getElementById('mavdName').innerHTML = `<span style="color:var(--light)">Weekend</span>`;
+    document.getElementById('mavdSlot').textContent = 'Geen dienst';
+    const nextMon = MAVD[1][0];
+    document.getElementById('mavdNext').textContent = `Maandag: ${nextMon} (09:00–13:00)`;
+  }
+}
+
+// JOTFORM LOGGING via Netlify function (uses server-side API key)
+function logToJotform(type, vraag, antwoord, naam) {
+  try {
+    fetch('/.netlify/functions/log', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        type: type,
+        vraag: (vraag || '').substring(0, 500),
+        antwoord: (antwoord || '').substring(0, 1000),
+        tijdstip: new Date().toLocaleString('nl-NL'),
+        naam: naam || ''
+      })
+    }).catch(() => {});
+  } catch(e) {}
+}
+
+// WACHTWOORD VERGETEN
+function toonWachtwoordVergeten() {
+  const form = document.getElementById('wwVergetenForm');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  const email = document.getElementById('loginEmail')?.value;
+  if (email) document.getElementById('wwEmail').value = email;
+}
+
+async function vraagResetLink() {
+  const email = document.getElementById('wwEmail').value.trim();
+  const msgEl = document.getElementById('wwMsg');
+  if (!email) { msgEl.textContent = 'Vul je e-mailadres in.'; return; }
+  
+  msgEl.textContent = 'Bezig...';
+  try {
+    const res = await fetch('/.netlify/functions/wachtwoord', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ action: 'generateLink', email })
+    });
+    const data = await res.json();
+    if (data.error) {
+      msgEl.textContent = data.error;
+    } else if (data.emailSent) {
+      msgEl.style.color = '#16a34a';
+      msgEl.textContent = 'E-mail verstuurd! Controleer je inbox.';
+    } else {
+      msgEl.textContent = 'Neem contact op met Ton Coffeng — e-mail kon niet worden verstuurd.';
+    }
+  } catch(e) {
+    msgEl.textContent = 'Er ging iets mis. Probeer opnieuw.';
+  }
+}
+
+// LOGOUT
+
+function doLogout() {
+  localStorage.removeItem('mvaToken');
+  localStorage.removeItem('mvaLevel');
+  localStorage.removeItem('mvaName');
+  window._mvaToken = null;
+  location.reload();
+}
+
+// LOGIN - restore token from session on load
+(function() {
+  const saved = localStorage.getItem('mvaToken');
+  if (saved) {
+    window._mvaToken = saved;
+    window._mvaLevel = localStorage.getItem('mvaLevel');
+    window._mvaName = localStorage.getItem('mvaName');
+    const ls = document.getElementById('loginScreen');
+    if (ls) ls.style.display = 'none';
+    const badge = document.querySelector('.header-badge');
+    if (badge && window._mvaName) badge.textContent = window._mvaName;
+    updateDutyWidget();
+    setInterval(updateDutyWidget, 60000); // Update every minute
+    // Show admin link for directie
+    const adminLink = document.getElementById('adminLink');
+    if (adminLink && (window._mvaLevel === 'directie' || localStorage.getItem('mvaLevel') === 'directie')) {
+      adminLink.style.display = 'inline';
+    }
+  }
+})();
+
+function doLogin() {
+  const email = document.getElementById('loginEmail')?.value.trim() || '';
+  const pw = document.getElementById('loginPassword').value.trim();
+  if (!email || !pw) {
+    document.getElementById('loginError').textContent = 'Vul je e-mailadres en wachtwoord in.';
+    document.getElementById('loginError').style.display = 'block';
+    return;
+  }
+  document.getElementById('loginError').style.display = 'none';
+  const btn = document.querySelector('.login-btn');
+  btn.textContent = 'Bezig...'; btn.disabled = true;
+
+  fetch('/.netlify/functions/auth', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'login', email, password: pw })
+  }).then(r => r.json()).then(data => {
+    if (data.token) {
+      window._mvaToken = data.token;
+      window._mvaLevel = data.level;
+      window._mvaName = data.name;
+      localStorage.setItem('mvaToken', data.token);
+      localStorage.setItem('mvaLevel', data.level);
+      localStorage.setItem('mvaName', data.name || email);
+      document.getElementById('loginScreen').style.display = 'none';
+      const badge = document.querySelector('.header-badge');
+      if (badge) badge.textContent = data.name || email;
+      updateDutyWidget();
+      setInterval(updateDutyWidget, 60000);
+      // Show admin link for directie
+      const adminLink = document.getElementById('adminLink');
+      if (adminLink && data.level === 'directie') adminLink.style.display = 'inline';
+    } else {
+      document.getElementById('loginError').textContent = data.error || 'Inloggen mislukt.';
+      document.getElementById('loginError').style.display = 'block';
+    }
+  }).catch(() => {
+    document.getElementById('loginError').textContent = 'Verbindingsfout. Probeer opnieuw.';
+    document.getElementById('loginError').style.display = 'block';
+  }).finally(() => { btn.textContent = 'Inloggen →'; btn.disabled = false; });
 }
 </script>
 </body>

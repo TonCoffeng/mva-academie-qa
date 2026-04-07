@@ -682,6 +682,9 @@ body {
       localStorage.setItem('mvaToken', token);
       localStorage.setItem('mvaLevel', level);
       localStorage.setItem('mvaName', naam);
+      window._mvaToken = token;
+      window._mvaLevel = level;
+      window._mvaName = naam;
       window.history.replaceState({}, '', window.location.pathname);
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('chatWrap').style.display = 'flex';

@@ -1,53 +1,41 @@
-// MVA Q&A — Authentication via MVA_USERS environment variable
 const crypto = require('crypto');
 
-function hashPassword(password, salt) {
-  return crypto.createHmac('sha256', salt).update(password).digest('hex');
-}
-
-function getUsers() {
-  try {
-    return JSON.parse(process.env.MVA_USERS || '{}');
-  } catch { return {}; }
-}
-
-exports.handler = async function(event, context) {
+exports.handler = async function(event) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
 
   let body;
-  try { body = JSON.parse(event.body); }
-  catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
+  try { body = JSON.parse(event.body); } catch {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
+  }
 
   const { action, email, password } = body;
 
   if (action === 'login') {
-    if (!email || !password) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'E-mail en wachtwoord verplicht' }) };
-    }
+    const users = {
+      'toncoffeng@makelaarsvan.nl': { name: 'Ton Coffeng', level: 'directie' },
+      'hanskoppes@makelaarsvan.nl': { name: 'Hans Koppes', level: 'directie' },
+      'moniqueklaver@makelaarsvan.nl': { name: 'Monique Klaver', level: 'makelaar' }
+    };
 
-    const users = getUsers();
-    const user = users[email.toLowerCase().trim()];
+    const emailLower = (email || '').toLowerCase().trim();
+    const user = users[emailLower];
 
     if (!user) {
-      return { statusCode: 401, body: JSON.stringify({ error: 'Onbekend e-mailadres. Neem contact op met Ton Coffeng.' }) };
-    }
-    if (!user.active) {
-      return { statusCode: 401, body: JSON.stringify({ error: 'Account niet actief. Neem contact op met Ton Coffeng.' }) };
+      return { statusCode: 401, body: JSON.stringify({ error: 'Gebruiker niet gevonden.' }) };
     }
 
-    const hash = hashPassword(password, user.salt);
-    if (hash !== user.passwordHash) {
+    if (password !== 'MVA2026!') {
       return { statusCode: 401, body: JSON.stringify({ error: 'Onjuist wachtwoord.' }) };
     }
 
-    const sessionToken = Buffer.from(`${email.toLowerCase()}:${user.level}:${Date.now()}`).toString('base64');
+    const token = Buffer.from(emailLower + ':' + user.level + ':' + Date.now()).toString('base64');
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ success: true, token: sessionToken, level: user.level, name: user.name })
+      body: JSON.stringify({ token, level: user.level, name: user.name })
     };
   }
 

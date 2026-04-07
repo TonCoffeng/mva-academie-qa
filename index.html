@@ -676,34 +676,20 @@ body {
       if (!ssoData || !ssoData.access_token || !ssoData.email) return;
       if (Date.now() - ssoData.ts > 3600000) return;
       var emailLower = ssoData.email.toLowerCase();
-      var defaultLevel = (emailLower === 'toncoffeng@makelaarsvan.nl' || emailLower === 'hanskoppes@makelaarsvan.nl') ? 'directie' : 'makelaar';
-      function activeerSSO(level, naam) {
-        // Token format: email:level:timestamp - exact wat chat.js verwacht
-        var token = btoa(emailLower + ':' + level + ':' + Date.now());
-        localStorage.setItem('mvaToken', token);
-        localStorage.setItem('mvaLevel', level);
-        localStorage.setItem('mvaName', naam || emailLower.split('@')[0]);
-        window.history.replaceState({}, '', window.location.pathname);
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('chatWrap').style.display = 'flex';
-        var badge = document.querySelector('.header-badge');
-        if (badge) badge.textContent = naam || emailLower.split('@')[0];
-        if (typeof updateDutyWidget === 'function') updateDutyWidget();
-      }
-      var SUPABASE_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
-      var SUPABASE_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
-      fetch(SUPABASE_URL + '/rest/v1/gebruikers?email=eq.' + encodeURIComponent(emailLower) + '&select=naam,level,actief', {
-        headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + ssoData.access_token }
-      }).then(function(r) { return r.ok ? r.json() : []; })
-        .then(function(data) {
-          var g = data && data[0];
-          activeerSSO(g ? g.level : defaultLevel, g ? g.naam : null);
-        })
-        .catch(function() {
-          activeerSSO(defaultLevel, null);
-        });
+      var level = (emailLower === 'toncoffeng@makelaarsvan.nl' || emailLower === 'hanskoppes@makelaarsvan.nl') ? 'directie' : 'makelaar';
+      var naam = emailLower.split('@')[0];
+      var token = btoa(emailLower + ':' + level + ':' + Date.now());
+      localStorage.setItem('mvaToken', token);
+      localStorage.setItem('mvaLevel', level);
+      localStorage.setItem('mvaName', naam);
+      window.history.replaceState({}, '', window.location.pathname);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('chatWrap').style.display = 'flex';
+      var badge = document.querySelector('.header-badge');
+      if (badge) badge.textContent = naam;
+      if (typeof updateDutyWidget === 'function') updateDutyWidget();
     } catch(e) {}
-  })();et history = [];
+  })();t history = [];
 let loading = false;
 
 function autoResize(el) {

@@ -1187,29 +1187,37 @@ function doLogout() {
 
 // LOGIN - restore token from session on load
 (function() {
+  const ls = document.getElementById('loginScreen');
   const saved = localStorage.getItem('mvaToken');
-  if (saved) {
-    try {
-      const decoded = decodeURIComponent(escape(atob(saved)));
-      const parts = decoded.split(':');
-      const ts = parseInt(parts[2]);
-      if (isNaN(ts) || (Date.now() - ts) > 82800000) {
-        localStorage.removeItem('mvaToken');
-        localStorage.removeItem('mvaLevel');
-        localStorage.removeItem('mvaName');
-        return;
-      }
-    } catch(e) {
+  if (!saved) {
+    // Geen token: toon loginscherm
+    if (ls) ls.style.display = 'flex';
+    return;
+  }
+  // Token aanwezig: check leeftijd
+  try {
+    const decoded = decodeURIComponent(escape(atob(saved)));
+    const parts = decoded.split(':');
+    const ts = parseInt(parts[2]);
+    if (isNaN(ts) || (Date.now() - ts) > 82800000) {
       localStorage.removeItem('mvaToken');
       localStorage.removeItem('mvaLevel');
       localStorage.removeItem('mvaName');
+      if (ls) ls.style.display = 'flex';
       return;
     }
-    window._mvaToken = saved;
-    window._mvaLevel = localStorage.getItem('mvaLevel');
-    window._mvaName = localStorage.getItem('mvaName');
-    const ls = document.getElementById('loginScreen');
-    if (ls) ls.style.display = 'none';
+  } catch(e) {
+    localStorage.removeItem('mvaToken');
+    localStorage.removeItem('mvaLevel');
+    localStorage.removeItem('mvaName');
+    if (ls) ls.style.display = 'flex';
+    return;
+  }
+  // Token geldig: verberg loginscherm
+  window._mvaToken = saved;
+  window._mvaLevel = localStorage.getItem('mvaLevel');
+  window._mvaName = localStorage.getItem('mvaName');
+  if (ls) ls.style.display = 'none';
     const badge = document.querySelector('.header-badge');
     if (badge && window._mvaName) badge.textContent = window._mvaName;
     updateDutyWidget();

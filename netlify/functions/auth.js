@@ -63,5 +63,15 @@ exports.handler = async function(event, context) {
     };
   }
 
+  // Debug: toon huidige user data (tijdelijk)
+  if (action === 'debug') {
+    const users = getUsers();
+    const sanitized = {};
+    Object.keys(users).forEach(email => {
+      sanitized[email] = { salt: users[email].salt, hashStart: users[email].passwordHash ? users[email].passwordHash.slice(0,16) : 'leeg', active: users[email].active };
+    });
+    return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sanitized) };
+  }
+
   return { statusCode: 400, body: JSON.stringify({ error: 'Onbekende actie' }) };
 };

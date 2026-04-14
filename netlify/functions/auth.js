@@ -27,6 +27,12 @@ exports.handler = async function(event, context) {
 
   const { action, email, password } = body;
 
+  // Tijdelijk: genereer hash voor een gegeven wachtwoord + salt
+  if (action === 'genhash') {
+    const hash = hashPassword(password, body.salt);
+    return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hash }) };
+  }
+
   if (action === 'login') {
     if (!email || !password) {
       return { statusCode: 400, body: JSON.stringify({ error: 'E-mail en wachtwoord verplicht' }) };

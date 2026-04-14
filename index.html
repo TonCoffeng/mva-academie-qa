@@ -666,7 +666,7 @@ body {
 
 <script>
 // ── SSO: Automatisch inloggen via portal ──
-  (function() {
+  document.addEventListener('DOMContentLoaded', function() {
     if (localStorage.getItem('mvaToken')) return;
 
     var urlParams = new URLSearchParams(window.location.search);
@@ -726,7 +726,7 @@ body {
         window.location.reload();
       }).catch(function() {});
     } catch(e) {}
-  })();let history = [];
+  });let history = [];
 let loading = false;
 
 function autoResize(el) {

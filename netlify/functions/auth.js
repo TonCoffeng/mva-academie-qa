@@ -6,15 +6,14 @@ function hashPassword(password, salt) {
 }
 
 const FALLBACK_USERS = {
-  'toncoffeng@makelaarsvan.nl': { name: 'Ton Coffeng', level: 'directie', salt: 'b17f604d745f6406aaf44e511a3e887d', passwordHash: 'b75a65bd5b6ebc5cadca29e2a7eeb18266c6c57af0516c0fa6577134241bec57', active: true },
-  'hanskoppes@makelaarsvan.nl': { name: 'Hans Koppes', level: 'directie', salt: 'mva2026hans', passwordHash: '7b4112306949b4a780c11ff11c2756f00dadee72e87c3dd5b3655b3a39764e05', active: true },
+  'toncoffeng@makelaarsvan.nl': { name: 'Ton Coffeng', level: 'directie', salt: 'b17f604d745f6406aaf44e511a3e887d', passwordHash: 'a4a750674f40ade3ddba2ece58a3e688c6ceaf7f7d8a552fc7e53b852090d0b4', active: true },
+  'hanskoppes@makelaarsvan.nl': { name: 'Hans Koppes', level: 'directie', salt: 'b17f604d745f6406aaf44e511a3e887d', passwordHash: 'a4a750674f40ade3ddba2ece58a3e688c6ceaf7f7d8a552fc7e53b852090d0b4', active: true },
   'moniqueklaver@makelaarsvan.nl': { name: 'Monique Klaver', level: 'makelaar', salt: 'd9f0ac00c2fa7b9dd0d7863b28837b64', passwordHash: '15513e09665a2eda79c802cb05b4e3912942975a50c3ce8c097bf1d8857d04ed', active: true }
 };
 
 function getUsers() {
   try {
     const envUsers = JSON.parse(process.env.MVA_USERS || '{}');
-    // Gebruik env var als die geldig is, anders fallback
     if (Object.keys(envUsers).length > 0) return envUsers;
     return FALLBACK_USERS;
   } catch {

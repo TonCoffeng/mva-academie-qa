@@ -1,37 +1,40 @@
-// MVA Q&A — Authentication
+// MVA Q&A — Authentication (tijdelijk: plain vergelijking voor reset)
 const crypto = require('crypto');
 
 function hashPassword(password, salt) {
   return crypto.createHmac('sha256', salt).update(password).digest('hex');
 }
 
-const FALLBACK_USERS = {
-  'toncoffeng@makelaarsvan.nl': { name: 'Ton Coffeng', level: 'directie', salt: 'b17f604d745f6406aaf44e511a3e887d', passwordHash: 'a4a750674f40ade3ddba2ece58a3e688c6ceaf7f7d8a552fc7e53b852090d0b4', active: true },
-  'hanskoppes@makelaarsvan.nl': { name: 'Hans Koppes', level: 'directie', salt: 'b17f604d745f6406aaf44e511a3e887d', passwordHash: 'a4a750674f40ade3ddba2ece58a3e688c6ceaf7f7d8a552fc7e53b852090d0b4', active: true },
-  'moniqueklaver@makelaarsvan.nl': { name: 'Monique Klaver', level: 'makelaar', salt: 'd9f0ac00c2fa7b9dd0d7863b28837b64', passwordHash: '15513e09665a2eda79c802cb05b4e3912942975a50c3ce8c097bf1d8857d04ed', active: true }
-};
+// Genereer hashes bij eerste aanroep
+const SALT_TON = 'mva_ton_2026_x9k';
+const SALT_HANS = 'mva_hans_2026_x9k';
+const SALT_MON = 'mva_mon_2026_x9k';
 
-function getUsers() {
-  try {
-    const envUsers = JSON.parse(process.env.MVA_USERS || '{}');
-    if (Object.keys(envUsers).length > 0) return envUsers;
-    return FALLBACK_USERS;
-  } catch {
-    return FALLBACK_USERS;
+const USERS = {
+  'toncoffeng@makelaarsvan.nl': {
+    name: 'Ton Coffeng', level: 'directie', active: true,
+    salt: SALT_TON,
+    passwordHash: hashPassword('Level2!', SALT_TON)
+  },
+  'hanskoppes@makelaarsvan.nl': {
+    name: 'Hans Koppes', level: 'directie', active: true,
+    salt: SALT_HANS,
+    passwordHash: hashPassword('Level2!', SALT_HANS)
+  },
+  'moniqueklaver@makelaarsvan.nl': {
+    name: 'Monique Klaver', level: 'makelaar', active: true,
+    salt: SALT_MON,
+    passwordHash: hashPassword('MVA2026!', SALT_MON)
   }
-}
+};
 
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
   }
-
   let body;
-  try {
-    body = JSON.parse(event.body);
-  } catch {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
-  }
+  try { body = JSON.parse(event.body); }
+  catch { return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) }; }
 
   const { action, email, password } = body;
 
@@ -39,8 +42,7 @@ exports.handler = async function(event, context) {
     if (!email || !password) {
       return { statusCode: 400, body: JSON.stringify({ error: 'E-mail en wachtwoord verplicht' }) };
     }
-    const users = getUsers();
-    const user = users[email.toLowerCase().trim()];
+    const user = USERS[email.toLowerCase().trim()];
     if (!user) return { statusCode: 401, body: JSON.stringify({ error: 'Onbekend e-mailadres. Neem contact op met Ton Coffeng.' }) };
     if (!user.active) return { statusCode: 401, body: JSON.stringify({ error: 'Account niet actief.' }) };
     const hash = hashPassword(password, user.salt);

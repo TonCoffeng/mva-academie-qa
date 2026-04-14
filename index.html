@@ -1186,15 +1186,13 @@ function doLogout() {
 }
 
 // LOGIN - restore token from session on load
-(function() {
+document.addEventListener('DOMContentLoaded', function() {
   const ls = document.getElementById('loginScreen');
   const saved = localStorage.getItem('mvaToken');
   if (!saved) {
-    // Geen token: toon loginscherm
     if (ls) ls.style.display = 'flex';
     return;
   }
-  // Token aanwezig: check leeftijd
   try {
     const decoded = decodeURIComponent(escape(atob(saved)));
     const parts = decoded.split(':');
@@ -1213,7 +1211,7 @@ function doLogout() {
     if (ls) ls.style.display = 'flex';
     return;
   }
-  // Token geldig: verberg loginscherm
+  // Token geldig
   window._mvaToken = saved;
   window._mvaLevel = localStorage.getItem('mvaLevel');
   window._mvaName = localStorage.getItem('mvaName');

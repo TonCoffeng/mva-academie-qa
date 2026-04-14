@@ -1,4 +1,5 @@
 // MVA Q&A — Authentication via MVA_USERS environment variable
+// v1776186739677
 const crypto = require('crypto');
 
 function hashPassword(password, salt) {
@@ -26,12 +27,6 @@ exports.handler = async function(event, context) {
   }
 
   const { action, email, password } = body;
-
-  // Tijdelijk: genereer hash voor een gegeven wachtwoord + salt
-  if (action === 'genhash') {
-    const hash = hashPassword(password, body.salt);
-    return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ hash }) };
-  }
 
   if (action === 'login') {
     if (!email || !password) {
@@ -61,16 +56,6 @@ exports.handler = async function(event, context) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ success: true, token: sessionToken, level: user.level, name: user.name })
     };
-  }
-
-  // Debug: toon huidige user data (tijdelijk)
-  if (action === 'debug') {
-    const users = getUsers();
-    const sanitized = {};
-    Object.keys(users).forEach(email => {
-      sanitized[email] = { salt: users[email].salt, hashStart: users[email].passwordHash ? users[email].passwordHash.slice(0,16) : 'leeg', active: users[email].active };
-    });
-    return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sanitized) };
   }
 
   return { statusCode: 400, body: JSON.stringify({ error: 'Onbekende actie' }) };

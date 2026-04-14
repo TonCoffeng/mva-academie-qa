@@ -916,7 +916,7 @@ async function send() {
       localStorage.removeItem('mvaName');
       window._mvaToken = null;
       removeTyping();
-      addMsg('assistant', 'Je sessie is verlopen. Log opnieuw in om verder te gaan.');
+      addMsg('assistant', 'Je sessie is verlopen. <a href="#" onclick="localStorage.removeItem('mvaToken');localStorage.removeItem('mvaLevel');localStorage.removeItem('mvaName');location.reload();return false;" style="color:#E8500A;font-weight:700;text-decoration:underline;">Log hier opnieuw in →</a>');
       setTimeout(() => location.reload(), 2000);
       return;
     }
@@ -1189,6 +1189,22 @@ function doLogout() {
 (function() {
   const saved = localStorage.getItem('mvaToken');
   if (saved) {
+    try {
+      const decoded = decodeURIComponent(escape(atob(saved)));
+      const parts = decoded.split(':');
+      const ts = parseInt(parts[2]);
+      if (isNaN(ts) || (Date.now() - ts) > 82800000) {
+        localStorage.removeItem('mvaToken');
+        localStorage.removeItem('mvaLevel');
+        localStorage.removeItem('mvaName');
+        return;
+      }
+    } catch(e) {
+      localStorage.removeItem('mvaToken');
+      localStorage.removeItem('mvaLevel');
+      localStorage.removeItem('mvaName');
+      return;
+    }
     window._mvaToken = saved;
     window._mvaLevel = localStorage.getItem('mvaLevel');
     window._mvaName = localStorage.getItem('mvaName');

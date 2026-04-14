@@ -405,7 +405,7 @@ body {
   position: fixed;
   inset: 0;
   background: var(--navy);
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
@@ -1190,7 +1190,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const ls = document.getElementById('loginScreen');
   const saved = localStorage.getItem('mvaToken');
   if (!saved) {
-    if (ls) ls.style.display = 'flex';
+    // Geen token — loginscherm blijft zichtbaar (default CSS)
     return;
   }
   try {
@@ -1201,17 +1201,15 @@ document.addEventListener('DOMContentLoaded', function() {
       localStorage.removeItem('mvaToken');
       localStorage.removeItem('mvaLevel');
       localStorage.removeItem('mvaName');
-      if (ls) ls.style.display = 'flex';
       return;
     }
   } catch(e) {
     localStorage.removeItem('mvaToken');
     localStorage.removeItem('mvaLevel');
     localStorage.removeItem('mvaName');
-    if (ls) ls.style.display = 'flex';
     return;
   }
-  // Token geldig
+  // Token geldig: verberg loginscherm
   window._mvaToken = saved;
   window._mvaLevel = localStorage.getItem('mvaLevel');
   window._mvaName = localStorage.getItem('mvaName');

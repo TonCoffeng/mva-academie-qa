@@ -10,6 +10,8 @@ const SALT_TON = 'mva_ton_2026_x9k';
 const SALT_HANS = 'mva_hans_2026_x9k';
 const SALT_MON = 'mva_mon_2026_x9k';
 
+const SALT_ROEMER = 'mva_roemer_2026_x9k';
+
 const USERS = {
   'toncoffeng@makelaarsvan.nl': {
     name: 'Ton Coffeng', level: 'directie', active: true,
@@ -20,6 +22,11 @@ const USERS = {
     name: 'Hans Koppes', level: 'directie', active: true,
     salt: SALT_HANS,
     passwordHash: hashPassword('Level2!', SALT_HANS)
+  },
+  'roemerkoppes@makelaarsvan.nl': {
+    name: 'Roemer Koppes', level: 'directie', active: true,
+    salt: SALT_ROEMER,
+    passwordHash: hashPassword('Level2!', SALT_ROEMER)
   },
   'moniqueklaver@makelaarsvan.nl': {
     name: 'Monique Klaver', level: 'makelaar', active: true,

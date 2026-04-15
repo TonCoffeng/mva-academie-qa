@@ -3,268 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MVA Academie — Gebruikersbeheer</title>
+<title>MVA Beheer</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; min-height: 100vh; }
-  .header { background: #1A2B5F; color: white; padding: 16px 24px; display: flex; align-items: center; gap: 16px; }
-  .header h1 { font-size: 18px; font-weight: 700; }
-  .header span { color: #E8500A; }
-  .container { max-width: 900px; margin: 32px auto; padding: 0 16px; }
-  .card { background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 24px; }
-  .card-header { padding: 20px 24px 16px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-  .card-title { font-size: 16px; font-weight: 700; color: #1A2B5F; }
-  table { width: 100%; border-collapse: collapse; }
-  th { padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; color: #888; border-bottom: 2px solid #eee; }
-  td { padding: 14px 16px; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
-  tr:last-child td { border-bottom: none; }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-  .badge-directie { background: #1A2B5F22; color: #1A2B5F; }
-  .badge-makelaar { background: #E8500A22; color: #E8500A; }
-  .badge-actief { background: #22c55e22; color: #16a34a; }
-  .badge-inactief { background: #ef444422; color: #dc2626; }
-  .btn { padding: 7px 14px; border: none; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: opacity .2s; }
-  .btn:hover { opacity: .8; }
-  .btn-primary { background: #1A2B5F; color: white; }
-  .btn-orange { background: #E8500A; color: white; }
-  .btn-danger { background: #ef4444; color: white; }
-  .btn-secondary { background: #f0f2f5; color: #555; }
-  .form-group { margin-bottom: 16px; }
-  .form-label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px; }
-  .form-input { width: 100%; padding: 10px 12px; border: 2px solid #e5e7eb; border-radius: 6px; font-size: 14px; }
-  .form-input:focus { outline: none; border-color: #1A2B5F; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .form-body { padding: 24px; }
-  .msg { padding: 12px 16px; border-radius: 6px; font-size: 13px; margin-bottom: 16px; }
-  .msg-success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-  .msg-error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-  #loginScreen { display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #1A2B5F; }
-  .login-box { background: white; padding: 40px; border-radius: 12px; width: 360px; text-align: center; }
-  .login-box h2 { color: #1A2B5F; margin-bottom: 8px; }
-  .login-box p { color: #888; font-size: 13px; margin-bottom: 24px; }
-  #mainContent { display: none; }
-  .actions { display: flex; gap: 8px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#F6F4EF;min-height:100vh}
+header{background:#1A2B5F;padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between}
+.hlogo{font-size:15px;font-weight:600;color:#fff}.hlogo span{color:#E8500A}
+.hright{display:flex;align-items:center;gap:12px}
+.huser{font-size:13px;color:rgba(255,255,255,.6)}
+.hbtn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none}
+.hbtn-outline{background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff}
+.hbtn-orange{background:#E8500A;color:#fff}
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1A2B5F}
+.login-box{background:#fff;border-radius:12px;padding:2rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.login-box h2{font-size:20px;font-weight:700;color:#1A2B5F;margin-bottom:.25rem}
+.login-box p{font-size:13px;color:#6B6760;margin-bottom:1.5rem}
+.login-box label{font-size:12px;font-weight:600;color:#6B6760;display:block;margin-bottom:4px}
+.login-box input{width:100%;height:40px;border:1.5px solid #E2DFD8;border-radius:8px;padding:0 12px;font-size:14px;margin-bottom:1rem;outline:none}
+.login-box input:focus{border-color:#1A2B5F}
+.login-box button{width:100%;height:42px;background:#1A2B5F;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.login-error{color:#E8500A;font-size:13px;margin-top:.5rem;text-align:center}
+#main{display:none;max-width:900px;margin:0 auto;padding:1.5rem}
+.card{background:#fff;border-radius:12px;border:1px solid #E2DFD8;padding:1.5rem;margin-bottom:1.25rem}
+.card h3{font-size:16px;font-weight:600;color:#1A2B5F;margin-bottom:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.form-row.three{grid-template-columns:1fr 1fr 1fr}
+label{font-size:12px;font-weight:600;color:#6B6760;display:block;margin-bottom:4px}
+input,select{width:100%;height:38px;border:1.5px solid #E2DFD8;border-radius:7px;padding:0 10px;font-size:13px;outline:none;font-family:inherit}
+input:focus,select:focus{border-color:#1A2B5F}
+.btn{padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none}
+.btn-primary{background:#1A2B5F;color:#fff}
+.btn-orange{background:#E8500A;color:#fff}
+.btn-danger{background:#fee2e2;color:#b91c1c}
+.btn-sm{padding:5px 12px;font-size:12px}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:600;color:#B0ACA2;text-transform:uppercase;letter-spacing:.05em;padding:.5rem .75rem;text-align:left;border-bottom:1px solid #E2DFD8}
+td{padding:.65rem .75rem;font-size:13px;color:#2C2B27;border-bottom:1px solid #F0EEE9}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
+.badge-dir{background:#E6F1FB;color:#0C447C}
+.badge-mak{background:#EAF3DE;color:#27500A}
+.badge-on{background:#EAF3DE;color:#27500A}
+.badge-off{background:#F0EEE9;color:#B0ACA2}
+.msg{padding:.75rem 1rem;border-radius:8px;font-size:13px;margin-bottom:1rem}
+.msg-ok{background:#EAF3DE;color:#27500A}
+.msg-err{background:#fee2e2;color:#b91c1c}
 </style>
 </head>
 <body>
 
-<div id="loginScreen">
+<div id="login-screen">
   <div class="login-box">
     <h2>MVA <span style="color:#E8500A">Beheer</span></h2>
     <p>Inloggen als directie</p>
-    <div id="loginMsg"></div>
-    <div class="form-group">
-      <input class="form-input" type="email" id="loginEmail" placeholder="E-mailadres">
-    </div>
-    <div class="form-group">
-      <input class="form-input" type="password" id="loginPass" placeholder="Wachtwoord">
-    </div>
-    <button class="btn btn-primary" style="width:100%;padding:12px" onclick="doLogin()">Inloggen</button>
+    <label>E-mailadres</label>
+    <input type="email" id="lemail" placeholder="naam@makelaarsvan.nl">
+    <label>Wachtwoord</label>
+    <input type="password" id="lpwd" placeholder="Wachtwoord" onkeydown="if(event.key==='Enter')doLogin()">
+    <button onclick="doLogin()">Inloggen</button>
+    <div class="login-error" id="lerr"></div>
   </div>
 </div>
 
-<div id="mainContent">
-  <div class="header">
-    <h1>MVA Academie — <span>Gebruikersbeheer</span></h1>
-    <div style="margin-left:auto;font-size:13px;opacity:.7" id="headerName"></div>
-    <a href="/" class="btn btn-secondary" style="margin-left:8px">← MVA Academie Q&A</a><button class="btn btn-secondary" onclick="doLogout()" style="margin-left:8px">Uitloggen</button>
+<header style="display:none" id="hdr">
+  <div class="hlogo">MVA <span>Beheer</span></div>
+  <div class="hright">
+    <span class="huser" id="huser"></span>
+    <button class="hbtn hbtn-outline" onclick="location.href='https://q-and-a-mva.netlify.app'">← Q&A</button>
+    <button class="hbtn hbtn-outline" onclick="location.href='https://mva-intelligence.netlify.app'">Portal</button>
+    <button class="hbtn hbtn-outline" onclick="doLogout()">Uitloggen</button>
+  </div>
+</header>
+
+<div id="main">
+  <div id="msg-area"></div>
+
+  <div class="card">
+    <h3>Nieuwe gebruiker toevoegen</h3>
+    <div class="form-row three">
+      <div><label>Naam</label><input id="fnaam" placeholder="Jan de Vries"></div>
+      <div><label>E-mailadres</label><input id="femail" placeholder="jan@makelaarsvan.nl"></div>
+      <div><label>Niveau</label>
+        <select id="flevel">
+          <option value="makelaar">Makelaar</option>
+          <option value="directie">Directie</option>
+          <option value="compliance">Compliance</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div><label>Wachtwoord</label><input id="fpwd" placeholder="Tijdelijk wachtwoord" value="MVA2026!"></div>
+      <div style="display:flex;align-items:flex-end">
+        <button class="btn btn-orange" onclick="addUser()" style="height:38px;width:100%">Gebruiker toevoegen</button>
+      </div>
+    </div>
   </div>
 
-  <div class="container">
-    <div id="mainMsg"></div>
-
-    <!-- Gebruikers toevoegen -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Nieuwe gebruiker toevoegen</div>
-      </div>
-      <div class="form-body">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Naam</label>
-            <input class="form-input" id="newNaam" placeholder="Jan de Vries">
-          </div>
-          <div class="form-group">
-            <label class="form-label">E-mailadres</label>
-            <input class="form-input" id="newEmail" placeholder="jan@makelaarsvan.nl">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Niveau</label>
-            <select class="form-input" id="newLevel">
-              <option value="makelaar">Makelaar</option>
-              <option value="directie">Directie</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn btn-orange" onclick="addGebruiker()">Gebruiker toevoegen →</button>
-        <div id="linkBox" style="display:none;margin-top:16px;background:#f0f4ff;border-radius:8px;padding:16px;">
-          <div style="font-size:12px;font-weight:700;color:#1A2B5F;margin-bottom:8px">📧 Stuur deze link naar de makelaar om een wachtwoord in te stellen:</div>
-          <input id="linkValue" class="form-input" readonly onclick="this.select()" style="font-size:11px;background:white">
-          <div style="font-size:11px;color:#888;margin-top:6px">De link is 24 uur geldig. Het account wordt actief zodra de makelaar een wachtwoord heeft ingesteld.</div>
-        </div>
-      </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <h3 style="margin:0">Alle gebruikers</h3>
+      <button class="btn btn-sm btn-primary" onclick="loadUsers()">Vernieuwen</button>
     </div>
-
-    <!-- Gebruikerslijst -->
-    <div class="card">
-      <div class="card-header">
-        <div class="card-title">Alle gebruikers</div>
-        <button class="btn btn-secondary" onclick="loadGebruikers()">↻ Vernieuwen</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Naam</th>
-            <th>E-mailadres</th>
-            <th>Niveau</th>
-            <th>Status</th>
-            <th>Aangemaakt</th>
-            <th>Acties</th>
-          </tr>
-        </thead>
-        <tbody id="gebruikersLijst">
-          <tr><td colspan="6" style="text-align:center;color:#888;padding:24px">Laden...</td></tr>
-        </tbody>
-      </table>
-    </div>
+    <div id="tbl-area"><p style="color:#B0ACA2;font-size:13px">Laden...</p></div>
   </div>
 </div>
 
 <script>
-let _token = null;
+const SUPA_URL = 'https://ehqtyhoeubchcwfavdzr.supabase.co';
+const SUPA_KEY = 'sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet';
+const { createClient } = supabase;
+const db = createClient(SUPA_URL, SUPA_KEY);
+
+let currentUser = null;
+
+function showMsg(txt, ok) {
+  const a = document.getElementById('msg-area');
+  a.innerHTML = '<div class="msg ' + (ok?'msg-ok':'msg-err') + '">' + txt + '</div>';
+  setTimeout(() => a.innerHTML = '', 4000);
+}
 
 async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPass').value;
-  document.getElementById('loginMsg').innerHTML = '';
+  const email = document.getElementById('lemail').value.trim();
+  const pwd = document.getElementById('lpwd').value;
+  document.getElementById('lerr').textContent = '';
   
-  const res = await fetch('/.netlify/functions/auth', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ action: 'login', email, password: pass })
-  });
-  const data = await res.json();
-  
-  if (!res.ok || data.error) {
-    document.getElementById('loginMsg').innerHTML = `<div class="msg msg-error">${data.error}</div>`;
-    return;
+  try {
+    const r = await fetch('/.netlify/functions/auth', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({action:'login', email, password: pwd})
+    });
+    const d = await r.json();
+    if (!d.success) { document.getElementById('lerr').textContent = 'Ongeldige inloggegevens'; return; }
+    if (d.level !== 'directie' && d.level !== 'level2') {
+      document.getElementById('lerr').textContent = 'Alleen directie heeft toegang'; return;
+    }
+    currentUser = d;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('hdr').style.display = 'flex';
+    document.getElementById('main').style.display = 'block';
+    document.getElementById('huser').textContent = d.name;
+    loadUsers();
+  } catch(e) {
+    document.getElementById('lerr').textContent = 'Verbindingsfout: ' + e.message;
   }
-  if (data.level !== 'directie') {
-    document.getElementById('loginMsg').innerHTML = `<div class="msg msg-error">Alleen directie heeft toegang tot dit beheerportaal.</div>`;
-    return;
-  }
-  
-  _token = data.token;
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'block';
-  document.getElementById('headerName').textContent = data.name;
-  loadGebruikers();
 }
 
 function doLogout() {
-  _token = null;
-  location.reload();
+  currentUser = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('hdr').style.display = 'none';
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('lemail').value = '';
+  document.getElementById('lpwd').value = '';
 }
 
-async function adminCall(body) {
-  const res = await fetch('/.netlify/functions/admin', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ ...body, token: _token })
-  });
-  return res.json();
+async function loadUsers() {
+  const { data, error } = await db.from('gebruikers').select('*').order('naam');
+  if (error) { document.getElementById('tbl-area').innerHTML = '<p style="color:red">Fout: ' + error.message + '</p>'; return; }
+  if (!data || !data.length) { document.getElementById('tbl-area').innerHTML = '<p style="color:#B0ACA2;font-size:13px">Geen gebruikers gevonden</p>'; return; }
+  
+  let rows = data.map(u => '<tr>'
+    + '<td>' + esc(u.naam) + '</td>'
+    + '<td style="color:#6B6760">' + esc(u.email) + '</td>'
+    + '<td><span class="badge ' + (u.level==='directie'?'badge-dir':'badge-mak') + '">' + esc(u.level) + '</span></td>'
+    + '<td><span class="badge ' + (u.actief?'badge-on':'badge-off') + '">' + (u.actief?'Actief':'Inactief') + '</span></td>'
+    + '<td style="color:#B0ACA2;font-size:12px">' + (u.created_at?u.created_at.slice(0,10):'') + '</td>'
+    + '<td><button class="btn btn-sm btn-danger" onclick="deleteUser(\'' + u.id + '\',\'' + esc(u.naam) + '\')">Verwijder</button></td>'
+    + '</tr>').join('');
+  
+  document.getElementById('tbl-area').innerHTML = '<table>'
+    + '<thead><tr><th>Naam</th><th>E-mail</th><th>Niveau</th><th>Status</th><th>Aangemaakt</th><th>Actie</th></tr></thead>'
+    + '<tbody>' + rows + '</tbody></table>';
 }
 
-async function loadGebruikers() {
-  const data = await adminCall({ action: 'list' });
-  const lijst = document.getElementById('gebruikersLijst');
+async function addUser() {
+  const naam = document.getElementById('fnaam').value.trim();
+  const email = document.getElementById('femail').value.trim().toLowerCase();
+  const level = document.getElementById('flevel').value;
+  const pwd = document.getElementById('fpwd').value;
   
-  if (!data.gebruikers?.length) {
-    lijst.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;padding:24px">Geen gebruikers gevonden</td></tr>';
-    return;
-  }
+  if (!naam || !email || !pwd) { showMsg('Vul alle velden in', false); return; }
   
-  lijst.innerHTML = data.gebruikers.map(g => `
-    <tr>
-      <td><strong>${g.naam}</strong></td>
-      <td>${g.email}</td>
-      <td><span class="badge badge-${g.level}">${g.level}</span></td>
-      <td><span class="badge badge-${g.actief ? 'actief' : 'inactief'}">${g.actief ? 'Actief' : 'Inactief'}</span></td>
-      <td>${new Date(g.aangemaakt).toLocaleDateString('nl-NL')}</td>
-      <td>
-        <div class="actions">
-          <button class="btn btn-secondary" onclick="toggleGebruiker('${g.id}', ${g.actief})">${g.actief ? 'Deactiveer' : 'Activeer'}</button>
-          <button class="btn btn-secondary" onclick="getResetLink('${g.email}', '${g.naam}')">Reset link</button>
-          <button class="btn btn-danger" onclick="deleteGebruiker('${g.id}', '${g.naam}')">Verwijder</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+  // Genereer salt en hash
+  const salt = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+  const msgBuffer = new TextEncoder().encode(pwd);
+  const keyBuffer = new TextEncoder().encode(salt);
+  const key = await crypto.subtle.importKey('raw', keyBuffer, {name:'HMAC',hash:'SHA-256'}, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', key, msgBuffer);
+  const hashArray = Array.from(new Uint8Array(sig));
+  const passwordHash = hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
+  
+  const { data, error } = await db.from('gebruikers').insert([{
+    naam, email, level, salt, password_hash: passwordHash, actief: true
+  }]).select();
+  
+  if (error) { showMsg('Fout: ' + error.message, false); return; }
+  
+  showMsg('Gebruiker ' + naam + ' aangemaakt. Wachtwoord: ' + pwd, true);
+  document.getElementById('fnaam').value = '';
+  document.getElementById('femail').value = '';
+  document.getElementById('fpwd').value = 'MVA2026!';
+  loadUsers();
 }
 
-async function addGebruiker() {
-  const naam = document.getElementById('newNaam').value.trim();
-  const email = document.getElementById('newEmail').value.trim();
-  const level = document.getElementById('newLevel').value;
-  
-  if (!naam || !email) {
-    showMsg('Vul naam en e-mailadres in.', 'error');
-    return;
-  }
-  
-  const data = await adminCall({ action: 'add', gebruiker: { naam, email, level } });
-  
-  if (data.error) {
-    showMsg(data.error, 'error');
-    return;
-  }
-  
-  showMsg(`${naam} is toegevoegd. Stuur de link hieronder op.`, 'success');
-  document.getElementById('newNaam').value = '';
-  document.getElementById('newEmail').value = '';
-  
-  // Show the setup link
-  if (data.link) {
-    document.getElementById('linkBox').style.display = 'block';
-    document.getElementById('linkValue').value = data.link;
-  }
-  
-  loadGebruikers();
+async function deleteUser(id, naam) {
+  if (!confirm('Verwijder ' + naam + '?')) return;
+  const { error } = await db.from('gebruikers').delete().eq('id', id);
+  if (error) { showMsg('Fout: ' + error.message, false); return; }
+  showMsg(naam + ' verwijderd', true);
+  loadUsers();
 }
 
-async function toggleGebruiker(id, actief) {
-  await adminCall({ action: 'toggle', id });
-  loadGebruikers();
-}
-
-async function deleteGebruiker(id, naam) {
-  if (!confirm(`Weet je zeker dat je ${naam} wilt verwijderen?`)) return;
-  await adminCall({ action: 'delete', id });
-  showMsg(`${naam} is verwijderd.`, 'success');
-  loadGebruikers();
-}
-
-async function getResetLink(email, naam) {
-  const data = await adminCall({ action: 'getResetLink', email });
-  if (data.link) {
-    document.getElementById('linkBox').style.display = 'block';
-    document.getElementById('linkValue').value = data.link;
-    document.getElementById('linkValue').select();
-    window.scrollTo(0, 0);
-    showMsg(`Reset link gegenereerd voor ${naam}. Kopieer en stuur op.`, 'success');
-  }
-}
-
-function showMsg(tekst, type) {
-  const el = document.getElementById('mainMsg');
-  el.innerHTML = `<div class="msg msg-${type}">${tekst}</div>`;
-  setTimeout(() => el.innerHTML = '', 4000);
-}
-
-document.getElementById('loginEmail').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
-document.getElementById('loginPass').addEventListener('keydown', e => e.key === 'Enter' && doLogin());
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 </script>
 </body>
 </html>

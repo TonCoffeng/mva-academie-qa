@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MVA Beheer</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="initApp()"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',sans-serif;background:#F6F4EF;min-height:100vh}
@@ -107,6 +107,7 @@ td{padding:.65rem .75rem;font-size:13px;border-bottom:1px solid #F0EEE9}
 </div>
 
 <script>
+function initApp(){
 const DB = supabase.createClient('https://ehqtyhoeubchcwfavdzr.supabase.co','sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet');
 
 function showMsg(txt,ok){
@@ -174,6 +175,7 @@ async function delUser(id,naam){
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+}
 </script>
 </body>
 </html>

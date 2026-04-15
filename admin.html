@@ -4,177 +4,158 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MVA Beheer</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="initApp()"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',sans-serif;background:#F6F4EF;min-height:100vh}
-header{background:#1A2B5F;padding:0 1.5rem;height:56px;display:flex;align-items:center;justify-content:space-between}
-.hlogo{font-size:15px;font-weight:600;color:#fff}.hlogo span{color:#E8500A}
-.hright{display:flex;align-items:center;gap:10px}
-.huser{font-size:13px;color:rgba(255,255,255,.6)}
-.hbtn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff}
-#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1A2B5F}
-.login-box{background:#fff;border-radius:12px;padding:2rem;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.2)}
-.login-box h2{font-size:20px;font-weight:700;color:#1A2B5F;margin-bottom:.25rem}
-.login-box p{font-size:13px;color:#6B6760;margin-bottom:1.5rem}
-.login-box label{font-size:12px;font-weight:600;color:#6B6760;display:block;margin-bottom:4px}
-.login-box input{width:100%;height:40px;border:1.5px solid #E2DFD8;border-radius:8px;padding:0 12px;font-size:14px;margin-bottom:1rem;outline:none;font-family:inherit}
-.login-box input:focus{border-color:#1A2B5F}
-.login-box button{width:100%;height:42px;background:#1A2B5F;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
-.lerr{color:#E8500A;font-size:13px;margin-top:.5rem;text-align:center}
-#main{display:none;max-width:860px;margin:0 auto;padding:1.5rem}
+body{font-family:Segoe UI,sans-serif;background:#F6F4EF;min-height:100vh}
+#loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1A2B5F}
+.box{background:#fff;border-radius:12px;padding:2rem;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.box h2{font-size:20px;font-weight:700;color:#1A2B5F;margin-bottom:.25rem}
+.box p{font-size:13px;color:#6B6760;margin-bottom:1.5rem}
+.lbl{font-size:12px;font-weight:600;color:#6B6760;display:block;margin-bottom:4px;margin-top:.75rem}
+.inp{width:100%;height:40px;border:1.5px solid #E2DFD8;border-radius:8px;padding:0 12px;font-size:14px;font-family:inherit;outline:none}
+.inp:focus{border-color:#1A2B5F}
+.btnLogin{width:100%;height:42px;margin-top:1.25rem;background:#1A2B5F;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
+.err{color:#E8500A;font-size:13px;margin-top:.75rem;text-align:center;min-height:18px}
+#appWrap{display:none}
+header{background:#1A2B5F;height:56px;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.hlogo{font-size:15px;font-weight:600;color:#fff}.hlogo b{color:#E8500A}
+.hbtns{display:flex;align-items:center;gap:8px}
+.huser{font-size:13px;color:rgba(255,255,255,.6);margin-right:4px}
+.hbtn{padding:6px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;background:transparent;border:1px solid rgba(255,255,255,.35);color:#fff}
+.wrap{max-width:860px;margin:0 auto;padding:1.5rem}
+.note{background:#E6F1FB;border-radius:8px;padding:.75rem 1rem;font-size:12.5px;color:#0C447C;margin-bottom:1.25rem}
 .card{background:#fff;border-radius:12px;border:1px solid #E2DFD8;padding:1.5rem;margin-bottom:1.25rem}
 .card h3{font-size:16px;font-weight:600;color:#1A2B5F;margin-bottom:1rem}
-.form-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;align-items:end}
-label{font-size:12px;font-weight:600;color:#6B6760;display:block;margin-bottom:4px}
-input,select{width:100%;height:38px;border:1.5px solid #E2DFD8;border-radius:7px;padding:0 10px;font-size:13px;outline:none;font-family:inherit}
-input:focus,select:focus{border-color:#1A2B5F}
-.btn{padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;border:none;height:38px}
-.btn-orange{background:#E8500A;color:#fff;width:100%}
-.btn-danger{background:#fee2e2;color:#b91c1c;padding:5px 12px;font-size:12px;height:auto}
-.btn-sm{padding:6px 14px;font-size:12px;background:#1A2B5F;color:#fff}
-.note{background:#E6F1FB;border-radius:8px;padding:.75rem 1rem;font-size:12.5px;color:#0C447C;margin-bottom:1rem}
+.frow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px;align-items:end}
+.finp{width:100%;height:38px;border:1.5px solid #E2DFD8;border-radius:7px;padding:0 10px;font-size:13px;font-family:inherit;outline:none}
+.finp:focus{border-color:#1A2B5F}
+.flbl{font-size:12px;font-weight:600;color:#6B6760;display:block;margin-bottom:4px}
+.btnAdd{width:100%;height:38px;background:#E8500A;color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer}
+.cardHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.cardHead h3{margin:0}
+.btnSm{padding:6px 14px;background:#1A2B5F;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer}
 table{width:100%;border-collapse:collapse}
 th{font-size:11px;font-weight:600;color:#B0ACA2;text-transform:uppercase;letter-spacing:.05em;padding:.5rem .75rem;text-align:left;border-bottom:1px solid #E2DFD8}
 td{padding:.65rem .75rem;font-size:13px;border-bottom:1px solid #F0EEE9}
 .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:500}
-.b-dir{background:#E6F1FB;color:#0C447C}
-.b-mak{background:#EAF3DE;color:#27500A}
-.b-comp{background:#EEEDFE;color:#3C3489}
-.b-on{background:#EAF3DE;color:#27500A}
-.b-off{background:#F0EEE9;color:#B0ACA2}
-.msg{padding:.75rem 1rem;border-radius:8px;font-size:13px;margin-bottom:1rem}
-.msg-ok{background:#EAF3DE;color:#27500A}
-.msg-err{background:#fee2e2;color:#b91c1c}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.card-header h3{margin:0}
+.bd{background:#E6F1FB;color:#0C447C}.bm{background:#EAF3DE;color:#27500A}.bc{background:#EEEDFE;color:#3C3489}
+.ba{background:#EAF3DE;color:#27500A}.bi{background:#F0EEE9;color:#B0ACA2}
+.btnDel{padding:4px 10px;background:#fee2e2;color:#b91c1c;border:none;border-radius:6px;font-size:12px;cursor:pointer}
+.ok{background:#EAF3DE;color:#27500A;padding:.65rem 1rem;border-radius:8px;font-size:13px;margin-bottom:1rem}
+.er{background:#fee2e2;color:#b91c1c;padding:.65rem 1rem;border-radius:8px;font-size:13px;margin-bottom:1rem}
 </style>
 </head>
 <body>
 
-<div id="login-screen">
-  <div class="login-box">
-    <h2>MVA <span style="color:#E8500A">Beheer</span></h2>
+<div id="loginWrap">
+  <div class="box">
+    <h2>MVA <b style="color:#E8500A">Beheer</b></h2>
     <p>Inloggen als directie</p>
-    <label>E-mailadres</label>
-    <input type="email" id="lemail" placeholder="naam@makelaarsvan.nl">
-    <label>Wachtwoord</label>
-    <input type="password" id="lpwd" placeholder="Wachtwoord" onkeydown="if(event.key==='Enter')doLogin()">
-    <button onclick="doLogin()">Inloggen</button>
-    <div class="lerr" id="lerr"></div>
+    <label class="lbl">E-mailadres</label>
+    <input class="inp" type="email" id="em" placeholder="naam@makelaarsvan.nl">
+    <label class="lbl">Wachtwoord</label>
+    <input class="inp" type="password" id="pw" placeholder="Wachtwoord">
+    <button class="btnLogin" id="loginBtn">Inloggen</button>
+    <div class="err" id="er"></div>
   </div>
 </div>
 
-<header style="display:none" id="hdr">
-  <div class="hlogo">MVA <span>Beheer</span></div>
-  <div class="hright">
-    <span class="huser" id="huser"></span>
-    <button class="hbtn" onclick="location.href='https://q-and-a-mva.netlify.app'">Q&A</button>
-    <button class="hbtn" onclick="location.href='https://mva-intelligence.netlify.app'">Portal</button>
-    <button class="hbtn" onclick="doLogout()">Uitloggen</button>
-  </div>
-</header>
-
-<div id="main">
-  <div id="msg-area"></div>
-  <div class="note">
-    Gebruikers die je hier toevoegt krijgen toegang tot de Q&A Kennisbank. Stuur ze daarna handmatig hun wachtwoord: <b>Directie = Level2!</b> &nbsp;|&nbsp; <b>Makelaar = MVA2026!</b>
-  </div>
-
-  <div class="card">
-    <h3>Nieuwe gebruiker toevoegen</h3>
-    <div class="form-row">
-      <div><label>Naam</label><input id="fnaam" placeholder="Jan de Vries"></div>
-      <div><label>E-mailadres</label><input id="femail" placeholder="jan@makelaarsvan.nl"></div>
-      <div><label>Niveau</label>
-        <select id="flevel">
-          <option value="makelaar">Makelaar</option>
-          <option value="directie">Directie</option>
-          <option value="compliance">Compliance</option>
-        </select>
+<div id="appWrap">
+  <header>
+    <div class="hlogo">MVA <b>Beheer</b></div>
+    <div class="hbtns">
+      <span class="huser" id="hu"></span>
+      <button class="hbtn" onclick="location.href='https://q-and-a-mva.netlify.app'">Q&amp;A</button>
+      <button class="hbtn" onclick="location.href='https://mva-intelligence.netlify.app'">Portal</button>
+      <button class="hbtn" onclick="logout()">Uitloggen</button>
+    </div>
+  </header>
+  <div class="wrap">
+    <div id="msgArea"></div>
+    <div class="note">Gebruikers die je hier toevoegt krijgen toegang tot de Q&amp;A. Wachtwoord meesturen: <b>Directie = Level2!</b> &nbsp;|&nbsp; <b>Makelaar = MVA2026!</b></div>
+    <div class="card">
+      <h3>Nieuwe gebruiker toevoegen</h3>
+      <div class="frow">
+        <div><label class="flbl">Naam</label><input class="finp" id="fn" placeholder="Jan de Vries"></div>
+        <div><label class="flbl">E-mailadres</label><input class="finp" id="fe" placeholder="jan@makelaarsvan.nl"></div>
+        <div><label class="flbl">Niveau</label><select class="finp" id="fl"><option value="makelaar">Makelaar</option><option value="directie">Directie</option><option value="compliance">Compliance</option></select></div>
       </div>
+      <button class="btnAdd" onclick="addUser()">Gebruiker toevoegen</button>
     </div>
-    <button class="btn btn-orange" onclick="addUser()">Gebruiker toevoegen</button>
-  </div>
-
-  <div class="card">
-    <div class="card-header">
-      <h3>Alle gebruikers</h3>
-      <button class="btn btn-sm" onclick="loadUsers()">Vernieuwen</button>
+    <div class="card">
+      <div class="cardHead"><h3>Alle gebruikers</h3><button class="btnSm" onclick="loadUsers()">Vernieuwen</button></div>
+      <div id="tbl">Laden...</div>
     </div>
-    <div id="tbl-area"><p style="color:#B0ACA2;font-size:13px">Laden...</p></div>
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-function initApp(){
-const DB = supabase.createClient('https://ehqtyhoeubchcwfavdzr.supabase.co','sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet');
-
-function showMsg(txt,ok){
-  const a=document.getElementById('msg-area');
-  a.innerHTML='<div class="msg '+(ok?'msg-ok':'msg-err')+'">'+txt+'</div>';
-  setTimeout(()=>a.innerHTML='',5000);
-}
-
-async function doLogin(){
-  const email=document.getElementById('lemail').value.trim();
-  const pwd=document.getElementById('lpwd').value;
-  document.getElementById('lerr').textContent='';
-  try{
-    const r=await fetch('/.netlify/functions/auth',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'login',email,password:pwd})});
-    const d=await r.json();
-    if(!d.success){document.getElementById('lerr').textContent='Ongeldige inloggegevens';return;}
-    const lvl=(d.level||'').toLowerCase();
-    if(lvl!=='directie'&&lvl!=='level2'){document.getElementById('lerr').textContent='Alleen directie heeft toegang';return;}
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('hdr').style.display='flex';
-    document.getElementById('main').style.display='block';
-    document.getElementById('huser').textContent=d.name;
+var DB;
+window.addEventListener("load", function() {
+  DB = supabase.createClient("https://ehqtyhoeubchcwfavdzr.supabase.co","sb_publishable_OqTL874jsDEMKg9LomfrmQ_nwIo6Wet");
+  document.getElementById("pw").addEventListener("keydown", function(e){ if(e.key==="Enter") doLogin(); });
+  document.getElementById("loginBtn").addEventListener("click", doLogin);
+});
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function msg(t,ok){var a=document.getElementById("msgArea");a.innerHTML="<div class=\""+(ok?"ok":"er")+"\">"+t+"</div>";setTimeout(function(){a.innerHTML="";},5000);}
+function doLogin(){
+  var em=document.getElementById("em").value.trim();
+  var pw=document.getElementById("pw").value;
+  document.getElementById("er").textContent="";
+  fetch("/.netlify/functions/auth",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"login",email:em,password:pw})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d.success){document.getElementById("er").textContent="Ongeldige inloggegevens";return;}
+    var l=(d.level||"").toLowerCase();
+    if(l!=="directie"&&l!=="level2"){document.getElementById("er").textContent="Alleen directie heeft toegang";return;}
+    document.getElementById("loginWrap").style.display="none";
+    document.getElementById("appWrap").style.display="block";
+    document.getElementById("hu").textContent=d.name;
     loadUsers();
-  }catch(e){document.getElementById('lerr').textContent='Fout: '+e.message;}
+  })
+  .catch(function(e){document.getElementById("er").textContent="Fout: "+e.message;});
 }
-
-function doLogout(){
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('hdr').style.display='none';
-  document.getElementById('main').style.display='none';
-  document.getElementById('lemail').value='';
-  document.getElementById('lpwd').value='';
+function logout(){
+  document.getElementById("loginWrap").style.display="flex";
+  document.getElementById("appWrap").style.display="none";
+  document.getElementById("em").value="";
+  document.getElementById("pw").value="";
 }
-
-async function loadUsers(){
-  const {data,error}=await DB.from('gebruikers').select('id,naam,email,level,actief').order('naam');
-  if(error){document.getElementById('tbl-area').innerHTML='<p style="color:red;font-size:13px">Fout: '+error.message+'</p>';return;}
-  if(!data||!data.length){document.getElementById('tbl-area').innerHTML='<p style="color:#B0ACA2;font-size:13px">Geen gebruikers gevonden</p>';return;}
-  const rows=data.map(u=>'<tr><td>'+esc(u.naam)+'</td><td style="color:#6B6760">'+esc(u.email)+'</td>'
-    +'<td><span class="badge '+(u.level==='directie'?'b-dir':u.level==='compliance'?'b-comp':'b-mak')+'">'+esc(u.level)+'</span></td>'
-    +'<td><span class="badge '+(u.actief?'b-on':'b-off')+'">'+(u.actief?'Actief':'Inactief')+'</span></td>'
-    +'<td><button class="btn btn-danger" onclick="delUser(''+u.id+'',''+esc(u.naam)+'')">Verwijder</button></td></tr>').join('');
-  document.getElementById('tbl-area').innerHTML='<table><thead><tr><th>Naam</th><th>E-mail</th><th>Niveau</th><th>Status</th><th>Actie</th></tr></thead><tbody>'+rows+'</tbody></table>';
+function loadUsers(){
+  DB.from("gebruikers").select("id,naam,email,level,actief").order("naam").then(function(res){
+    var data=res.data; var error=res.error;
+    if(error){document.getElementById("tbl").innerHTML="<p style='color:red'>Fout: "+error.message+"</p>";return;}
+    if(!data||!data.length){document.getElementById("tbl").innerHTML="<p style='color:#B0ACA2;font-size:13px'>Geen gebruikers gevonden</p>";return;}
+    var r=data.map(function(u){
+      return "<tr><td>"+esc(u.naam)+"</td><td style='color:#6B6760'>"+esc(u.email)+"</td>"
+        +"<td><span class='badge "+(u.level==="directie"?"bd":u.level==="compliance"?"bc":"bm")+"'>"+(u.level||"")+"</span></td>"
+        +"<td><span class='badge "+(u.actief?"ba":"bi")+"'"+">"+(u.actief?"Actief":"Inactief")+"</span></td>"
+        +"<td><button class='btnDel' onclick='delUser(\""+u.id+"\",\""+esc(u.naam)+"\")'> Verwijder</button></td></tr>";
+    }).join("");
+    document.getElementById("tbl").innerHTML="<table><thead><tr><th>Naam</th><th>E-mail</th><th>Niveau</th><th>Status</th><th>Actie</th></tr></thead><tbody>"+r+"</tbody></table>";
+  });
 }
-
-async function addUser(){
-  const naam=document.getElementById('fnaam').value.trim();
-  const email=document.getElementById('femail').value.trim().toLowerCase();
-  const level=document.getElementById('flevel').value;
-  if(!naam||!email){showMsg('Vul naam en e-mailadres in',false);return;}
-  const {error}=await DB.from('gebruikers').insert([{naam,email,level,actief:true}]);
-  if(error){showMsg('Fout: '+error.message,false);return;}
-  showMsg(naam+' toegevoegd. Stuur wachtwoord: '+(level==='directie'?'Level2!':'MVA2026!'),true);
-  document.getElementById('fnaam').value='';
-  document.getElementById('femail').value='';
-  loadUsers();
+function addUser(){
+  var naam=document.getElementById("fn").value.trim();
+  var email=document.getElementById("fe").value.trim().toLowerCase();
+  var level=document.getElementById("fl").value;
+  if(!naam||!email){msg("Vul naam en e-mailadres in",false);return;}
+  DB.from("gebruikers").insert([{naam:naam,email:email,level:level,actief:true}]).then(function(res){
+    if(res.error){msg("Fout: "+res.error.message,false);return;}
+    msg(naam+" toegevoegd. Wachtwoord: "+(level==="directie"?"Level2!":"MVA2026!"),true);
+    document.getElementById("fn").value="";
+    document.getElementById("fe").value="";
+    loadUsers();
+  });
 }
-
-async function delUser(id,naam){
-  if(!confirm('Verwijder '+naam+'?'))return;
-  const {error}=await DB.from('gebruikers').delete().eq('id',id);
-  if(error){showMsg('Fout: '+error.message,false);return;}
-  showMsg(naam+' verwijderd',true);
-  loadUsers();
-}
-
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function delUser(id,naam){
+  if(!confirm("Verwijder "+naam+"?"))return;
+  DB.from("gebruikers").delete().eq("id",id).then(function(res){
+    if(res.error){msg("Fout: "+res.error.message,false);return;}
+    msg(naam+" verwijderd",true);
+    loadUsers();
+  });
 }
 </script>
 </body>

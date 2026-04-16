@@ -507,52 +507,7 @@ body {
 
 </head>
 <body>
-<script>
-// SSO van portal — check ?sso= parameter
-(function(){
-  var params = new URLSearchParams(window.location.search);
-  var sso = params.get('sso');
-  if(!sso) return;
-  try {
-    var decoded = atob(sso);
-    var parts = decoded.split(':');
-    var email = parts[0];
-    var level = parts[1];
-    var ts = parseInt(parts[2]);
-    // Token mag max 5 minuten oud zijn
-    if(Date.now() - ts > 300000) return;
-    // Automatisch inloggen
-    fetch('/.netlify/functions/auth', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({action:'validate', email, level, token:sso})
-    }).then(r=>r.json()).then(d=>{
-      if(d.success || d.token) {
-        var t = d.token || sso;
-        sessionStorage.setItem('authToken', t);
-        sessionStorage.setItem('userLevel', level);
-        sessionStorage.setItem('userName', d.name || email.split('@')[0]);
-        // Verwijder sso param uit URL
-        var url = window.location.pathname;
-        window.history.replaceState({}, '', url);
-        // Laad de app
-        if(typeof initApp === 'function') initApp();
-        else window.location.reload();
-      }
-    }).catch(function(){
-      // Fallback: gebruik token direct als het format klopt
-      if(email && level && (level==='directie'||level==='makelaar')) {
-        sessionStorage.setItem('authToken', sso);
-        sessionStorage.setItem('userLevel', level);
-        sessionStorage.setItem('userName', email.split('@')[0].replace(/[0-9]/g,''));
-        var url = window.location.pathname;
-        window.history.replaceState({}, '', url);
-        if(typeof initApp === 'function') initApp();
-        else window.location.reload();
-      }
-    });
-  } catch(e) {}
-})();</script>
+
 
 
 <!-- Netlify form (hidden) -->

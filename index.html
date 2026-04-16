@@ -532,7 +532,7 @@ body {
     <div class="login-label">E-mailadres</div>
     <input type="email" class="login-input" id="loginEmail" placeholder="jouw@makelaarsvan.nl" onkeydown="if(event.key==='Enter') document.getElementById('loginPassword').focus()">
     <div class="login-label">Wachtwoord</div>
-    <input type="password" class="login-input" id="loginPassword" placeholder="Jouw wachtwoord" onkeydown="if(event.key==='Enter') doLogin()">
+    <div style="position:relative"><input type="password" class="login-input" id="loginPassword" placeholder="Jouw wachtwoord" onkeydown="if(event.key==='Enter') doLogin()" style="padding-right:40px"><button type="button" onclick="var f=document.getElementById('loginPassword');f.type=f.type==='password'?'text':'password';this.innerHTML=f.type==='password'?'&#128065;':'&#128064;'" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;opacity:.5;line-height:1">&#128065;</button></div>
     <button class="login-btn" onclick="doLogin()">Inloggen â</button>
       <div style="text-align:center;margin-top:12px">
         <a href="#" style="font-size:12px;color:#888;text-decoration:none" onclick="toonWachtwoordVergeten();return false;">

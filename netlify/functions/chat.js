@@ -2,6 +2,7 @@
 const PARTNERS = require('./partners.json');
 const NINJA = require('./ninja.json');
 const MODULES = require('./modules.json');
+const MAKELAARS = require('./makelaars.json');
 
 // Find relevant modules for a query
 function findModules(query) {
@@ -195,6 +196,26 @@ function findRelevantPartners(query, accessLevel) {
   return relevant.length > 0 ? '\n\nRELEVANTE PARTNER/LEVERANCIER DATA:\n' + relevant.join('\n\n') : '';
 }
 
+// Find makelaar info by name or general makelaars questions
+function findMakelaar(query) {
+  const q = query.toLowerCase();
+  const matched = [];
+  for (const m of MAKELAARS.makelaars) {
+    const naamLower = m.naam.toLowerCase();
+    const roepLower = m.roepnaam.toLowerCase();
+    const achterLower = m.achternaam.toLowerCase().replace(',', '').trim();
+    if (q.includes(naamLower) || q.includes(roepLower) || (achterLower.length > 3 && q.includes(achterLower))) {
+      matched.push(`${m.naam} - ${m.functie}${m.leadpool ? ' (neemt deel aan Leadpool)' : ''}. Afdeling: ${m.afdeling}. Email: ${m.email}. Mobiel: ${m.mobiel || 'onbekend'}.`);
+    }
+  }
+  // Algemene vragen: geef volledige lijst
+  if (matched.length === 0 && (q.includes('wie werkt') || q.includes('collega') || q.includes('alle makelaars') || q.includes('welke makelaars') || q.includes('leadpool deelnemers'))) {
+    const allNames = MAKELAARS.makelaars.map(m => `${m.naam} (${m.functie}${m.leadpool ? ', Leadpool' : ''})`).join(', ');
+    matched.push(`Alle MVA-medewerkers (${MAKELAARS.aantal}): ${allNames}.`);
+  }
+  return matched.length > 0 ? '\n\nRELEVANTE MVA MEDEWERKER(S):\n' + matched.join('\n') : '';
+}
+
 exports.handler = async function(event, context) {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: 'Method Not Allowed' };
@@ -265,6 +286,7 @@ exports.handler = async function(event, context) {
     : '\n\nJe spreekt met een makelaar (Level 1). Toon alleen accountmanager en support contacten van leveranciers — geen directeuren of eindverantwoordelijken.';
   const ninjaContext = findNinjaChapters(lastUserMsg);
   const moduleContext = findModules(lastUserMsg);
+  const makelaarsContext = findMakelaar(lastUserMsg);
   // Build system prompt with size limit (max 60KB to avoid API errors)
   const MAX_PROMPT_SIZE = 60000;
   let systemPrompt = BASE_PROMPT + levelInstruction;
@@ -280,6 +302,10 @@ exports.handler = async function(event, context) {
   // Add module context if space allows  
   if (systemPrompt.length + moduleContext.length < MAX_PROMPT_SIZE) {
     systemPrompt += moduleContext;
+  }
+  // Add makelaars context if space allows
+  if (systemPrompt.length + makelaarsContext.length < MAX_PROMPT_SIZE) {
+    systemPrompt += makelaarsContext;
   }
   
   console.log('System prompt size:', systemPrompt.length, 'chars');

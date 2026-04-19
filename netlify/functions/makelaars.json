@@ -1,0 +1,183 @@
+{
+  "laatst_bijgewerkt": "2026-04-19",
+  "bron": "MVA Medewerkers export",
+  "aantal": 16,
+  "makelaars": [
+    {
+      "naam": "Anthonie Schilder",
+      "roepnaam": "Anthonie",
+      "achternaam": "Schilder",
+      "functie": "Makelaar",
+      "afdeling": "Anthonie Schilder Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "anthonieschilder@makelaarsvan.nl",
+      "mobiel": "06-30298911",
+      "leadpool": true
+    },
+    {
+      "naam": "Filipe Batáglia",
+      "roepnaam": "Filipe",
+      "achternaam": "Batáglia",
+      "functie": "Makelaar",
+      "afdeling": "A10 Vastgoed B.V",
+      "vestiging": "Amsterdam",
+      "email": "filipebataglia@makelaarsvan.nl",
+      "mobiel": "06-11607342",
+      "leadpool": false
+    },
+    {
+      "naam": "Gert Jan Mulder",
+      "roepnaam": "Gert Jan",
+      "achternaam": "Mulder",
+      "functie": "Makelaar",
+      "afdeling": "A10 Vastgoed B.V",
+      "vestiging": "Amsterdam",
+      "email": "gertjanmulder@makelaarsvan.nl",
+      "mobiel": "06-15900506",
+      "leadpool": false
+    },
+    {
+      "naam": "Hans Koppes",
+      "roepnaam": "Hans",
+      "achternaam": "Koppes",
+      "functie": "Makelaar",
+      "afdeling": "Regio Directie Amsterdam",
+      "vestiging": "Amsterdam",
+      "email": "hanskoppes@makelaarsvan.nl",
+      "mobiel": "06-46395611",
+      "leadpool": false
+    },
+    {
+      "naam": "Jan Jaap ten Arve",
+      "roepnaam": "Jan Jaap",
+      "achternaam": "Arve, ten",
+      "functie": "Makelaar",
+      "afdeling": "Jan Jaap ten Arve Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "janjaaptenarve@makelaarsvan.nl",
+      "mobiel": "06-14245376",
+      "leadpool": false
+    },
+    {
+      "naam": "Johan Vast",
+      "roepnaam": "Johan",
+      "achternaam": "Vast",
+      "functie": "Financieel manager",
+      "afdeling": "Regio Directie Amsterdam",
+      "vestiging": "Amsterdam",
+      "email": "info@vastadministraties.nl",
+      "mobiel": "06-21512705",
+      "leadpool": false
+    },
+    {
+      "naam": "Jori Netiv",
+      "roepnaam": "Jori",
+      "achternaam": "Netiv",
+      "functie": "Makelaar",
+      "afdeling": "Jori Netiv  Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "jorinetiv@makelaarsvan.nl",
+      "mobiel": "06-12965454",
+      "leadpool": true
+    },
+    {
+      "naam": "Jose Vargas Valencia",
+      "roepnaam": "Jose",
+      "achternaam": "Vargas Valencia",
+      "functie": "Financieel administratief medewerker",
+      "afdeling": "Regio Directie Amsterdam",
+      "vestiging": "Amsterdam",
+      "email": "josevalencia@makelaarsvan.nl",
+      "mobiel": "06-14831554",
+      "leadpool": false
+    },
+    {
+      "naam": "Mathias Elias",
+      "roepnaam": "Mathias",
+      "achternaam": "Elias",
+      "functie": "Makelaar",
+      "afdeling": "Mathias Elias Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "mathiaselias@makelaarsvan.nl",
+      "mobiel": "06-10444440",
+      "leadpool": true
+    },
+    {
+      "naam": "Maurits van Leeuwen",
+      "roepnaam": "Maurits",
+      "achternaam": "Leeuwen, van",
+      "functie": "Makelaar",
+      "afdeling": "Maurits van  Leeuwen Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "mauritsvanleeuwen@makelaarsvan.nl",
+      "mobiel": "06-11701437",
+      "leadpool": true
+    },
+    {
+      "naam": "Maurits Pieter Rodermond",
+      "roepnaam": "Maurits Pieter",
+      "achternaam": "Rodermond",
+      "functie": "Makelaar",
+      "afdeling": "Maurits Rodermond Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "mauritsrodermond@makelaarsvan.nl",
+      "mobiel": "06-46469380",
+      "leadpool": true
+    },
+    {
+      "naam": "Monique Klaver",
+      "roepnaam": "Monique",
+      "achternaam": "Klaver",
+      "functie": "Virtueel assistent",
+      "afdeling": "Monique Klaver - De Virtual Assistent",
+      "vestiging": "Amsterdam",
+      "email": "moniqueklaver@makelaarsvan.nl",
+      "mobiel": "06-15552356",
+      "leadpool": false
+    },
+    {
+      "naam": "Pelle Freijsen",
+      "roepnaam": "Pelle",
+      "achternaam": "Freijsen",
+      "functie": "Makelaar",
+      "afdeling": "Pelle Freijsen Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "pellefreijsen@makelaarsvan.nl",
+      "mobiel": "06-54668100",
+      "leadpool": false
+    },
+    {
+      "naam": "Rogier de Vries",
+      "roepnaam": "Rogier",
+      "achternaam": "Vries, de",
+      "functie": "Makelaar",
+      "afdeling": "Rogier de Vries Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "rogierdevries@makelaarsvan.nl",
+      "mobiel": "06-34930332",
+      "leadpool": false
+    },
+    {
+      "naam": "Ton Coffeng",
+      "roepnaam": "Ton",
+      "achternaam": "Coffeng",
+      "functie": "Directie",
+      "afdeling": "Ton Coffeng Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "toncoffeng@makelaarsvan.nl",
+      "mobiel": "06-53256891",
+      "leadpool": false
+    },
+    {
+      "naam": "Wilma Out",
+      "roepnaam": "Wilma",
+      "achternaam": "Out",
+      "functie": "Makelaar",
+      "afdeling": "Wilma Out Makelaardij",
+      "vestiging": "Amsterdam",
+      "email": "wilmaout@makelaarsvan.nl",
+      "mobiel": "06-15081963",
+      "leadpool": true
+    }
+  ]
+}
